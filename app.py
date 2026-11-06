@@ -16,7 +16,7 @@ FC_FILE = "card.md"
 
 # ---- GitHub storage (used only if GITHUB_TOKEN + DATA_REPO are set) ----
 GH_TOKEN = os.environ.get("GITHUB_TOKEN", "")
-GH_REPO = os.environ.get("DATA_REPO", "")
+GH_REPO = os.environ.get("DATA_REPO", "").strip().strip("/")
 GH_BRANCH = os.environ.get("DATA_BRANCH", "data")
 GH_PATH = os.environ.get("DATA_PATH", "questions").strip("/")
 GH_FC = os.environ.get("DATA_FC_PATH", "flashcard").strip("/")
@@ -25,6 +25,8 @@ try:
 except ValueError:
     SYNC_SECS = 60
 GH = bool(GH_TOKEN and GH_REPO)
+if bool(GH_TOKEN) != bool(GH_REPO):
+    print("[config] set BOTH GITHUB_TOKEN and DATA_REPO to enable GitHub storage", flush=True)
 
 # ---- Gemini ----
 GEM_MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-lite-latest")
@@ -522,6 +524,11 @@ def on_error(e):
         return e
     print(f"[error] {request.path}: {e!r}", flush=True)
     return jsonify(error=str(e)), 500
+
+
+@app.get("/healthz")
+def healthz():
+    return "ok", 200   # Render health check (no GitHub calls)
 
 
 @app.get("/")

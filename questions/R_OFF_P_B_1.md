@@ -1040,7 +1040,7 @@ C
 Alim-406; (চিকিৎসা ও ওষুধ শিল্পে রিকম্বিনেন্ট DNA প্রযুক্তি); Interferon → ক্যান্সার ও ভাইরাস সংক্রমণে; Human factor IX → হিমোফিলিয়া চিকিৎসায়; Tissue plasminogen activator (tPA) → হৃদরোগ চিকিৎসায়।
 
 ## status
-
+correct
 
 ### Q 59
 

@@ -487,7 +487,7 @@ $('#pdf-form').onsubmit=async e=>{
  btn.disabled=true;btn.textContent='Converting…';result.hidden=true;result.replaceChildren();
  try{
   const response=await fetch('/api/pdf-convert',{method:'POST',body:data});
-  let d;try{d=await response.json()}catch(_){throw new Error(response.status===413?'PDF is too large (maximum 50 MB).':'Server error (HTTP '+response.status+').')}
+  let d;try{d=await response.json()}catch(_){throw new Error(response.status===413?'The server rejected the upload because it is too large.':'Server error (HTTP '+response.status+').')}
   if(!response.ok)throw new Error(d.error||'Conversion failed.');
   const title=document.createElement('strong');title.className='up';title.textContent=`Saved ${d.filename} · ${d.questions} questions`;result.append(title);
   const info=document.createElement('p');info.className='mut';info.textContent=`${d.kind.toUpperCase()} detected · Saved to ${d.location}`;result.append(info);

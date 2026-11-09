@@ -2,7 +2,7 @@
 
 import os
 
-BASE = os.path.dirname(os.path.abspath(__file__))
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QDIR = os.environ.get("QUESTIONS_DIR", os.path.join(BASE, "questions"))
 FDIR = os.environ.get("FLASHCARD_DIR", os.path.join(BASE, "flashcard"))
 FC_FILE = "card.md"

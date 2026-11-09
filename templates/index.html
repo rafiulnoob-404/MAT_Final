@@ -357,11 +357,16 @@ async function loadCards(){
  $('#sv').hidden=true;$('#cg').hidden=false;cardsUI()}
 function cardsUI(){
  $('#ccnt').textContent=C.length+' cards';
- $('#cg').innerHTML=C.length?C.map(c=>`<div class="note" data-id="${c.id}" style="background:${c.color}"><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`).join(''):'<div class="mut">No cards yet. Tap "Add card".</div>';
+ $('#cg').innerHTML=C.length?C.map(c=>`<div class="note" data-id="${c.id}" style="background:${c.color}"><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="f">AI format</button><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`).join(''):'<div class="mut">No cards yet. Tap "Add card".</div>';
  math($('#cg'));
  $('#cg').querySelectorAll('.note button').forEach(b=>b.onclick=async()=>{
-  const id=+b.closest('.note').dataset.id;
-  if(b.dataset.a==='e')openEd(C.find(c=>c.id===id));
+  const id=+b.closest('.note').dataset.id,c=C.find(x=>x.id===id),a=b.dataset.a;
+  if(a==='e')openEd(c);
+  else if(a==='f'){
+   b.disabled=true;b.textContent='…';
+   try{const r=await post('/api/ai/format-card',{body:c.body},'POST',aiH());
+    await post('/api/cards/'+id,{body:r.body,color:c.color},'PUT');toast('Formatted',1);loadCards()}
+   catch(e){toast('AI failed: '+e);b.disabled=false;b.textContent='AI format'}}
   else if(confirm('Delete this card?')){try{await post('/api/cards/'+id,{},'DELETE');loadCards()}catch(e){toast('Delete failed: '+e)}}})}
 function study(){
  if(!C.length)return toast('No cards yet');
@@ -384,8 +389,14 @@ function openEd(c){
  swUI();$('#ed').hidden=false;$('#edit').focus();document.execCommand('styleWithCSS',false,false)}
 $('#ecancel').onclick=()=>$('#ed').hidden=true;
 $('#tbar').onmousedown=e=>e.preventDefault();
-$('#tbar').onclick=e=>{
+$('#tbar').onclick=async e=>{
  const b=e.target.closest('button');if(!b)return;const c=b.dataset.c;$('#edit').focus();
+ if(c==='ai'){
+  const body=h2m($('#edit'));if(!body)return toast('Card is empty');
+  b.disabled=true;b.textContent='Formatting…';
+  try{const r=await post('/api/ai/format-card',{body},'POST',aiH());$('#edit').innerHTML=md(r.body,0,1);math($('#edit'))}
+  catch(e){toast('AI failed: '+e)}
+  b.disabled=false;b.textContent='✨ AI format';return}
  if(c==='h')document.execCommand('formatBlock',false,document.queryCommandValue('formatBlock').toLowerCase()==='h3'?'div':'h3');
  else if(c==='mark'){const t=getSelection().toString();if(t)document.execCommand('insertHTML',false,'<mark>'+esc(t)+'</mark>')}
  else if(c==='table'){

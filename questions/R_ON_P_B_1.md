@@ -414,7 +414,7 @@ C
 Ha-244; (মূল (Root); • গুচ্ছমূল (fibrous root) → ধান; • অস্থানিক (Adventitious Root) → কেয়া, বট, অশ্বত্থ; • প্রধান (taproot) → মূলা, গাজর, বিট; • পরাশ্রয়ী (Epiphytic root) → অর্কিড;
 
 ## status
-incorrect
+correct
 
 ### Q 24
 
@@ -1368,7 +1368,7 @@ B
 Ha-424; (জলজ উদ্ভিদ বা হাইড্রোফাইটস); • Hydrilla → মূলাবদ্ধ নিমজ্জিত জলজ উদ্ভিদ • Nymphaea → মূলাবদ্ধ পত্র ভাসমান জলজ উদ্ভিদ • Enhydra → উভচর উদ্ভিদ
 
 ## status
-incorrect
+correct
 
 ### Q 77
 

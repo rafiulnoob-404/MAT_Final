@@ -7,9 +7,9 @@ import urllib.error
 import urllib.request
 
 from flask import Blueprint, jsonify, request
-import Config
-from routes.Cards import clean_body
-from routes.Questions import ans_index, parse_name
+from tools import settings
+from tools.cards import clean_body
+from tools.questions import ans_index, parse_name
 
 MODEL_OK = re.compile(r"^[A-Za-z0-9._\-]{1,64}$")
 
@@ -44,7 +44,7 @@ def gemini(prompt, key, model):
     message, payload = "Gemini request failed.", None
     for attempt in range(3):
         req = urllib.request.Request(
-            Config.GEM_BASE + model + ":generateContent", data=body, method="POST",
+            settings.GEM_BASE + model + ":generateContent", data=body, method="POST",
             headers={"Content-Type": "application/json", "x-goog-api-key": key})
         try:
             with urllib.request.urlopen(req, timeout=60) as response:
@@ -137,7 +137,7 @@ def create_blueprint(questions, lock):
         name = body.get("file")
         number, question = get_question(name, body.get("n"), questions, lock)
         key = (request.headers.get("X-Gemini-Key") or os.environ.get("GEMINI_API_KEY", "")).strip()
-        model = (request.headers.get("X-Gemini-Model") or Config.GEM_MODEL).strip()
+        model = (request.headers.get("X-Gemini-Model") or settings.GEM_MODEL).strip()
         text = gemini(ai_prompt(question), key, model)
         letter = ""
         match = re.match(r"\s*ANSWER:\s*\(?([A-D])\)?[^\n]*\n?", text, re.I)
@@ -180,7 +180,7 @@ def create_blueprint(questions, lock):
         if len(body) > 8000:
             return jsonify(error="card too long (max 8000 chars)"), 400
         key = (request.headers.get("X-Gemini-Key") or os.environ.get("GEMINI_API_KEY", "")).strip()
-        model = (request.headers.get("X-Gemini-Model") or Config.GEM_MODEL).strip()
+        model = (request.headers.get("X-Gemini-Model") or settings.GEM_MODEL).strip()
         prompt = ("Reformat this flashcard text as clean, compact markdown. Rules:\n"
                   "- Keep the same language (Bangla/English) and exact meaning; do not add or drop facts.\n"
                   "- Fix broken line breaks, spacing, bullets, numbering; use a table only if data is tabular.\n"

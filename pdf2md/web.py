@@ -3,7 +3,7 @@ import tempfile
 from pathlib import Path
 
 from flask import Blueprint, jsonify, request
-from routes.Questions import parse_name
+from tools.questions import parse_name
 from pdf2md.converter import convert, detect_kind
 
 

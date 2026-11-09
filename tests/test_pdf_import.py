@@ -24,11 +24,11 @@ def retina_pdf():
 class ImportTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.qdir = patch.object(main.Config, 'QDIR', self.tmp.name)
+        self.qdir = patch.object(main.settings, 'QDIR', self.tmp.name)
         self.qdir.start()
         self.loc = patch.dict(main.LOC, {'q': self.tmp.name})
         self.loc.start()
-        self.gh = patch.object(main.Config, 'GH', False)
+        self.gh = patch.object(main.settings, 'GH', False)
         self.gh.start()
         main.questions.clear_caches()
         self.client = main.app.test_client()
@@ -60,7 +60,7 @@ class ImportTests(unittest.TestCase):
         self.assertEqual(os.listdir(self.tmp.name), [])
 
     def test_github_direct_write(self):
-        with patch.object(main.Config, 'GH', True), patch.object(main.Config, 'GH_BRANCH', 'data'), \
+        with patch.object(main.settings, 'GH', True), patch.object(main.settings, 'GH_BRANCH', 'data'), \
              patch.object(main, 'gh_req', return_value={'content': {'sha': 'newsha'}}) as gh:
             self.assertEqual(main.save_new_question_file('U_ON_MT_2.md', 'hello'), 'GitHub data/questions')
             self.assertEqual(gh.call_args.args[0:2], ('PUT', 'questions/U_ON_MT_2.md'))

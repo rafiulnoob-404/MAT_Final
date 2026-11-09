@@ -6,9 +6,8 @@ A Flask application for practising admission-test MCQs, tracking question status
 
 ```text
 app.py          Flask entry point and storage wiring
-Config.py       Environment-based application configuration
-routes/         Question, flashcard, AI, PDF import, health and web routes
-pdf2md/         PDF-to-Markdown converter
+tools/          Configuration, question, flashcard, AI, health and web routes
+pdf2md/         PDF-to-Markdown converter and PDF upload route
 templates/      Browser interface
 ```
 
@@ -95,7 +94,7 @@ coaching, mode, phase, subject and file number. The app converts it to Markdown
 and saves the new question file directly to `DATA_PATH` on `DATA_BRANCH` when
 GitHub storage is configured, or to `QUESTIONS_DIR` otherwise. It will not
 replace an existing file. Conversion warnings should be reviewed; vector
-formulas cannot currently be imported as images. The upload limit is 50 MB.
+formulas cannot currently be imported as images.
 
 The standalone converter is also available as `python pdf2md/converter.py
 --help`. It can optionally crop formula images when used from the command line.

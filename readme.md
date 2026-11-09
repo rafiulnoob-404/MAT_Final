@@ -5,15 +5,14 @@ A Flask application for practising admission-test MCQs, tracking question status
 ## Project structure
 
 ```text
-app.py          Flask entry point, storage wiring, Gemini client and AI routes
+app.py          Flask entry point and storage wiring
 Config.py       Environment-based application configuration
-Questions.py    Question filename rules, Markdown parser, cache, service and routes
-Cards.py        Flashcard parser, service and CRUD routes
-Health.py       Health, cache reload and storage sync routes
+routes/         Question, flashcard, AI, PDF import, health and web routes
+pdf2md/         PDF-to-Markdown converter
 templates/      Browser interface
 ```
 
-The split is intentionally minimal. Parsing and business rules live in their domain modules, while `app.py` wires storage and external services together.
+The split is intentionally minimal. Parsing and business rules live in their domain modules, while `app.py` wires storage and services together.
 
 ## Requirements
 
@@ -88,3 +87,15 @@ A Gemini key and model can also be supplied from the application's Settings scre
 - GitHub changes are cached and committed in the background.
 - The application currently has no built-in user authentication; deploy it behind appropriate access controls if it is internet-facing.
 - For GitHub-backed storage, use a single Gunicorn worker because the cache and sync queue are process-local.
+
+## Importing exam PDFs
+
+Open **Files → Add PDF**, select a MAP or Retina exam-result PDF, and choose the
+coaching, mode, phase, subject and file number. The app converts it to Markdown
+and saves the new question file directly to `DATA_PATH` on `DATA_BRANCH` when
+GitHub storage is configured, or to `QUESTIONS_DIR` otherwise. It will not
+replace an existing file. Conversion warnings should be reviewed; vector
+formulas cannot currently be imported as images. The upload limit is 50 MB.
+
+The standalone converter is also available as `python pdf2md/converter.py
+--help`. It can optionally crop formula images when used from the command line.

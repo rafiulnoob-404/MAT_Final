@@ -101,6 +101,7 @@ nav button.on{color:var(--ac);box-shadow:inset 3px 3px 7px var(--s1),inset -3px 
 .mbox.w{max-width:900px}.cmpg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
 .frow{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.frow>.mut{min-width:72px}.frow .chips{margin-bottom:10px;gap:10px}
 input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);color:var(--tx);border-radius:14px;padding:10px 14px;font:inherit;box-shadow:inset 3px 3px 7px var(--s1),inset -3px -3px 7px var(--s2)}
+.pdf-form{max-width:720px;margin:0 auto}.pdf-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}.pdf-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;color:var(--ac);font-weight:800}.pdf-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}.pdf-upload{display:block;padding:20px;border-radius:18px;margin:16px 0;color:var(--tx)}.pdf-upload input{display:block;max-width:100%;margin-top:10px;font:inherit;font-size:.85rem}.pdf-check{display:flex;align-items:center;gap:9px;color:var(--tx)}.pdf-result{margin-top:18px;overflow-wrap:anywhere}.pdf-result ul{padding-left:22px}.pdf-result details{margin-top:10px}.pdf-form input[type=number]{width:100%;border:0;background:var(--bg);color:var(--tx);border-radius:14px;padding:10px 14px;font:inherit;box-shadow:inset 3px 3px 7px var(--s1),inset -3px -3px 7px var(--s2)}
 [hidden]{display:none!important}
 @media(max-width:520px){.g2{gap:14px}.card{padding:14px}.rc{flex-direction:column;text-align:center;gap:8px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.big{font-size:1.6rem}}
 @media(max-width:820px){nav{position:fixed;left:12px;right:12px;bottom:12px;margin:0;z-index:20}}
@@ -134,7 +135,29 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
  <div id="sv" hidden></div>
 </section>
 
-<section id="t-files" hidden><div id="fl"></div><div id="fv" hidden></div></section>
+<section id="t-files" hidden>
+ <div id="files-list"><div class="tools" style="margin-bottom:20px"><button class="btn p" id="add-pdf">+ Add PDF</button><span class="mut">Convert an exam result into questions</span></div><div id="fl"></div></div>
+ <div id="fv" hidden></div>
+ <div id="pdf-view" hidden><div class="tools" style="margin-bottom:20px"><button class="btn" id="pdf-back">← Files</button></div>
+  <form class="card pdf-form" id="pdf-form">
+   <div class="pdf-head"><div class="pdf-icon inset">PDF</div><div><h3>Add questions from PDF</h3><p class="mut">Convert and save directly to your questions folder.</p></div></div>
+   <label class="pdf-upload inset">Exam result PDF <span class="mut">· MAP or Retina, automatically detected</span><input type="file" name="pdf" accept=".pdf,application/pdf" required></label>
+   <p class="mut">Choose the details for your question file. Existing files will not be overwritten.</p>
+   <div class="pdf-grid">
+    <div><label for="pdf-co">Coaching</label><select id="pdf-co"><option value="U">UNMESH / MAP</option><option value="R">RETINA</option></select></div>
+    <div><label for="pdf-mode">Mode</label><select id="pdf-mode"><option value="OFF">Offline</option><option value="ON">Online</option></select></div>
+    <div><label for="pdf-phase">Phase</label><select id="pdf-phase"><option value="P">Phase P</option><option value="S">Phase S</option><option value="MT">Model Test</option></select></div>
+    <div id="pdf-subject-wrap"><label for="pdf-subject">Subject</label><select id="pdf-subject"><option value="B">Biology</option><option value="C">Chemistry</option><option value="P">Physics</option><option value="GK">GK</option><option value="E">English</option></select></div>
+    <div><label for="pdf-number">File number</label><input id="pdf-number" type="number" min="1" max="999999" value="1" required></div>
+   </div>
+   <p class="mut" style="margin-top:14px">Save as <strong id="pdf-name"></strong></p>
+   <label class="pdf-check"><input type="checkbox" name="status"> Keep answer status from the PDF</label>
+   <p class="mut">Formula images may require manual review. Conversion does not import images.</p>
+   <div class="acts"><button class="btn p" id="pdf-submit" type="submit">Convert &amp; save</button></div>
+   <div id="pdf-result" class="pdf-result" role="status" aria-live="polite" hidden></div>
+  </form>
+ </div>
+</section>
 
 <section id="t-settings" hidden>
  <div class="card" style="margin-bottom:18px"><h3>Appearance</h3>
@@ -445,13 +468,39 @@ function h2m(root){
 /* files (list is light; question bodies are paged in 25 at a time) */
 function filesUI(){
  const S={};IDX.forEach(q=>{(S[q.f]=S[q.f]||[]).push(q)});
- $('#fv').hidden=true;$('#fl').hidden=false;
+ $('#fv').hidden=true;$('#pdf-view').hidden=true;$('#files-list').hidden=false;
  $('#fl').innerHTML=FILES.length?`<div class="tiles">`+FILES.map(f=>{const s=stats(S[f.f]||[]);return`<button class="card tile" data-f="${f.f}"><b>${f.f.replace('.md','')}</b><span class="mut">${s.t} Q · ${s.a} done</span><div class="track"><i style="width:${pc(s.a,s.t)}%"></i></div></button>`}).join('')+`</div>`:'<div class="mut">No files. Name them like U_OFF_P_B_1.md</div>';
  $('#fl').querySelectorAll('.tile').forEach(b=>b.onclick=()=>openFile(b.dataset.f))}
+function pdfFilename(){
+ const phase=$('#pdf-phase').value;
+ $('#pdf-subject-wrap').hidden=phase==='MT';
+ return [$('#pdf-co').value,$('#pdf-mode').value,phase,...(phase==='MT'?[]:[$('#pdf-subject').value]),$('#pdf-number').value].join('_')+'.md';
+}
+function updatePdfName(){$('#pdf-name').textContent=pdfFilename()}
+['pdf-co','pdf-mode','pdf-phase','pdf-subject','pdf-number'].forEach(id=>$('#'+id).addEventListener('input',updatePdfName));
+updatePdfName();
+$('#add-pdf').onclick=()=>{$('#files-list').hidden=true;$('#fv').hidden=true;$('#pdf-view').hidden=false;$('#pdf-result').hidden=true};
+$('#pdf-back').onclick=filesUI;
+$('#pdf-form').onsubmit=async e=>{
+ e.preventDefault();const btn=$('#pdf-submit'),result=$('#pdf-result'),form=e.currentTarget;
+ const data=new FormData(form);data.set('name',pdfFilename());
+ btn.disabled=true;btn.textContent='Converting…';result.hidden=true;result.replaceChildren();
+ try{
+  const response=await fetch('/api/pdf-convert',{method:'POST',body:data});
+  let d;try{d=await response.json()}catch(_){throw new Error(response.status===413?'PDF is too large (maximum 50 MB).':'Server error (HTTP '+response.status+').')}
+  if(!response.ok)throw new Error(d.error||'Conversion failed.');
+  const title=document.createElement('strong');title.className='up';title.textContent=`Saved ${d.filename} · ${d.questions} questions`;result.append(title);
+  const info=document.createElement('p');info.className='mut';info.textContent=`${d.kind.toUpperCase()} detected · Saved to ${d.location}`;result.append(info);
+  if(d.warnings.length){const details=document.createElement('details'),summary=document.createElement('summary'),ul=document.createElement('ul');summary.textContent=`${d.warnings.length} conversion warning(s) — review`;details.append(summary);d.warnings.forEach(w=>{const li=document.createElement('li');li.textContent=w;ul.append(li)});details.append(ul);result.append(details)}
+  form.reset();updatePdfName();try{await loadIndex()}catch(_){const note=document.createElement('p');note.className='mut';note.textContent='Saved, but the file list could not be refreshed. Reload the page to see it.';result.append(note)}
+ }catch(err){const msg=document.createElement('p');msg.className='dn';msg.textContent=err.message||String(err);result.append(msg)}
+ finally{result.hidden=false;btn.disabled=false;btn.textContent='Convert & save'}
+};
+
 function fileCard(q){return`<div class="card q"><div class="qh"><span>Q${q.n}</span><span class="${sc(q.st)}">${q.st||'new'}</span></div><div class="stem">${md(q.stem)}</div>${q.opts.map((o,i)=>`<div class="opt done${i===q.ans?' ok':''}"><b>${'ABCD'[i]||i+1}</b><span>${md(o,1)}</span></div>`).join('')}${q.exp?`<div class="sol inset md">${md(q.exp)}</div>`:''}</div>`}
 async function openFile(n){
  const L=IDX.filter(q=>q.f===n),s=stats(L);let off=0;
- $('#fl').hidden=true;$('#fv').hidden=false;
+ $('#files-list').hidden=true;$('#pdf-view').hidden=true;$('#fv').hidden=false;
  $('#fv').innerHTML=`<div class="tools"><button class="btn" id="fb">← Files</button><b>${n.replace('.md','')}</b><span class="mut">${s.t} Q · <span class="up">${s.c}</span> / <span class="dn">${s.i}</span> / <span class="sk">${s.s}</span></span></div><div id="fq"></div><div class="acts" style="justify-content:center"><button class="btn p" id="fm" hidden>Load more</button></div>`;
  $('#fb').onclick=filesUI;scrollTo(0,0);
  const more=async()=>{
@@ -491,7 +540,7 @@ async function loadIndex(){
  if(!Array.isArray(d))throw d.error||'bad index';
  FILES=d;QC.clear();
  IDX=d.flatMap(f=>f.q.map(([n,c])=>({f:f.f,n,st:ST[c]||'',co:f.co,mo:f.mo,ph:f.ph,sb:f.sb})));
- dash();fUI();stc();build();if(!$('#t-files').hidden)filesUI()}
+ dash();fUI();stc();build();if(!$('#t-files').hidden && $('#pdf-view').hidden)filesUI()}
 
 $('#go').onclick=build;
 const t0=localStorage.tab;

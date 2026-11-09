@@ -5,11 +5,6 @@
 
 ### জীবনের প্রতিনিধি বলা হয় কোনটিকে? — **এনজাইম**
 
-### Card 2
-<!-- color: #d4f5dd -->
-
-### জুপ্লাংক্টন — প্রাথমিক খাদক
-
 ### Card 3
 <!-- color: #d6e8ff -->
 
@@ -43,13 +38,11 @@
 ### Card 7
 <!-- color: #d4f5dd -->
 
-- **RER (Rough Endoplasmic Reticulum):**
-  - **Primary Function:** **Protein** and **enzyme synthesis**.
-  - **Additional Functions:** Production of **lysosomes** and incorporation/binding of **calcium**.
-
-- **SER (Smooth Endoplasmic Reticulum):**
-  - **Primary Function:** Synthesis of **fat**, **glycogen**, and **hormones**.
-  - **Additional Functions:** Production of **sphaerosomes** and release/unbinding of **calcium**.
+- **RER (অমসৃণ এন্ডোপ্লাজমিক জালিকা):**
+   
+   - **প্রধান কাজ:** **প্রোটিন** ও **এনজাইম সংশ্লেষণ**।
+   - **অন্যান্য কাজ:** **লাইসোজোম** উৎপাদন এবং **ক্যালসিয়াম** সংযুক্তি বা আবদ্ধকরণ।
+- **SER (মসৃণ এন্ডোপ্লাজমিক জালিকা):**
 
 ### Card 8
 <!-- color: #fff3a3 -->
@@ -90,7 +83,7 @@ Ha-181; (ম্যালেরিয়া পরজীবীর জীবনচ
 ### Card 14
 <!-- color: #fff3a3 -->
 
-হৃৎপি-ের নিলয়ের অন্তঃপ্রাচীরের অভিক্ষেপরূপী পেশিগুলোর নাম কী? — প্যাপিলারি পেশি
+* **Name of the muscular projections** on the inner wall of the ventricles of the heart: **Papillary muscles** (`প্যাপিলারি পেশি`)
 
 ### Card 15
 <!-- color: #fff3a3 -->
@@ -223,3 +216,31 @@ Maternal antibody বলা হয় কোনটিকে? — IgG
    
    - **23 weeks**: Surfactant is **first secreted** in the lungs.
    - **Before 24 weeks**: Surfactant is **scarcely present** and functionally negligible.
+
+### Card 35
+<!-- color: #fff3a3 -->
+
+### Lipid Profile
+
+* **HDL (High-Density Lipoprotein):** Optimal level is **$>40\text{ mg/dl}$** (higher is better for heart health).
+* **LDL (Low-Density Lipoprotein):** Optimal level is **$<100\text{ mg/dl}$** (lower is better to prevent plaque buildup).
+* **Triglycerides:** Optimal level is **$<150\text{ mg/dl}$**.
+
+### Card 36
+<!-- color: #fff3a3 -->
+
+Ha-315; (সালোকসংশ্লেষনের প্রক্রিয়ার কলাকৌশল); আলোক নিরপেক্ষ অধ্যায় ক্লোরোপ্লাস্টের স্ট্রোমাতে সংঘটিত হয়। এটি একটি কার্বন বিজারণ পদ্ধতি। এতে কার্বোহাইড্রেট তৈরি হয়।
+
+### Card 37
+<!-- color: #fff3a3 -->
+
+Ha-335; (গ্লাইকোলাইসিস প্রক্রিয়া); শ্বসনের প্রথম ধাপ, সবাত ও অবাত শ্বসনের সাধারণ গতিপথ হলো গ্লাইকোলাইসিস। এটি সাইটোপ্লাজমে ঘটে। TCA চক্র ক্রেবস চক্রের অপর নাম।
+
+### Card 38
+<!-- color: #d4f5dd -->
+
+### গ্রাম-পজিটিভ ব্যাকটেরিয়া মনে রাখার শর্টকাট:
+
+**"AStSt"** (<u>A</u>ctinobacteria, <u>S</u>taphylococcus, <u>S</u>treptococcus সবাই <mark>Positive</mark>/পজিটিভ)।
+
+সুতরাং, এই গ্রুপে না থাকা বাকিরাই হলো গ্রাম-নেগেটিভ (যেমন: **Salmonella**)!

@@ -43,8 +43,13 @@
 ### Card 7
 <!-- color: #d4f5dd -->
 
-- **RER:** প্রধান কাজ প্রোটিন ও এনজাইম সংশ্লেষ। এছাড়াও লাইসোজোম উৎপাদন ও ক্যালসিয়াম যুক্ত করে।
-- **SER:** ফ্যাট, গ্লাইকোজেন ও হরমোন সংশ্লেষ। এছাড়া স্ফেরোসাম উৎপাদন ও ক্যালসিয়াম মুক্ত করে।
+- **RER (Rough Endoplasmic Reticulum):**
+  - **Primary Function:** **Protein** and **enzyme synthesis**.
+  - **Additional Functions:** Production of **lysosomes** and incorporation/binding of **calcium**.
+
+- **SER (Smooth Endoplasmic Reticulum):**
+  - **Primary Function:** Synthesis of **fat**, **glycogen**, and **hormones**.
+  - **Additional Functions:** Production of **sphaerosomes** and release/unbinding of **calcium**.
 
 ### Card 8
 <!-- color: #fff3a3 -->
@@ -164,6 +169,25 @@ Maternal antibody বলা হয় কোনটিকে? — IgG
 ### Card 28
 <!-- color: #fff3a3 -->
 
-- **অক্সিনটিক কোষ:** HCl ও ইনট্রিনাসিক ফ্যাক্টর ক্ষরণ করে।
-- **আর্জেন্টাফিন কোষ:** সেরোটনিন ক্ষরণ করে।
-- **জাইমোজেনিক কোষ:** পেপসিনোজেন ক্ষরণ করে।
+- **অক্সিনটিক কোষ:** **HCl** ও **ইনট্রিনসিক ফ্যাক্টর** ক্ষরণ করে।
+- **আর্জেন্টাফিন কোষ:** **সেরোটনিন** ক্ষরণ করে।
+- **জাইমোজেনিক কোষ:** **পেপসিনোজেন** ক্ষরণ করে।
+
+### Card 29
+<!-- color: #fff3a3 -->
+
+Aj-538; (অনুশীলনী প্রশ্ন-০৬); উস্পোর ডিপ্লোয়েড কোষ। স্পোর, ডিম্বাণু ও পরাগরেণু হ্যাপ্লয়েড কোষ।
+
+### Card 30
+<!-- color: #ffd6e0 -->
+
+### Optic Disc and Macula Lutea
+
+- **Optic Disc (`অপটিক ডিস্ক`):** Contains **no rods or cones**, hence called the **blind spot** (`অন্ধবিন্দু`).
+- **Macula Lutea (`ম্যাকুলা লুটিয়া`):** The **oval-shaped area** located just above the optic disc.
+- **Fovea Centralis (`ফোবিয়া সেন্ট্রালিস` / `পীতবিন্দু`):** The **depression at the center** of the macula lutea.
+
+### Card 31
+<!-- color: #fff3a3 -->
+
+Ha-55; (DNA অণুর রেপ্লিকেশন); DNA রেপ্লিকেশনে RNA পলিমারেজ অপ্রয়োজনীয়। এটি ট্রান্সক্রিপশন প্রক্রিয়ার প্রয়োজনীয় উপাদান।

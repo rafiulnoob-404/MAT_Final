@@ -206,7 +206,7 @@ def create_blueprint(questions, lock):
         model = (request.headers.get("X-Gemini-Model") or settings.GEM_MODEL).strip()
         prompt = ("Reformat and refine the provided flashcard text into clean, highly structured, and scannable Markdown.\n\n"
                   "Strict Execution Rules:\n"
-                  "1. **Language & Accuracy:** Do NOT allow any Banglish (Romanized Bangla). "
+                  "1. **Language & Accuracy:** Do NOT allow any Banglish, using the same language as the text (Bangla or English). "
                   "Standardize the language into pure English or proper Bangla. Correct any grammatical errors, "
                   "spelling mistakes, or incomplete sentences while retaining the original facts; "
                   "do not introduce unsupported facts.\n"

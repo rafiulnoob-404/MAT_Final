@@ -120,9 +120,9 @@ Maternal antibody বলা হয় কোনটিকে? — IgG
 ### Card 21
 <!-- color: #ffd6e0 -->
 
-1. **পেরিভিসেরাল সাইনাস** → পৌষ্টিকতন্ত্র, জননতন্ত্র, রেচনতন্ত্র
-2. **পেরিনিউরাল/স্টার্নাল সাইনাস** → স্নায়ুরজ্জু
-3. **ডর্সাল/পেরিকার্ডিয়াল সাইনাস** → হৃদযন্ত্র
+1. **Peri-visceral Sinus** → Contains the **alimentary system**, **reproductive system**, and **excretory system**.
+2. **Perineural / Sternal Sinus** → Contains the **nerve cord**.
+3. **Dorsal / Pericardial Sinus** → Contains the **heart**.
 
 ### Card 22
 <!-- color: #fff3a3 -->
@@ -137,9 +137,12 @@ Maternal antibody বলা হয় কোনটিকে? — IgG
 ### Card 24
 <!-- color: #fff3a3 -->
 
-অর্গ্যান অব কর্টি কানের কোন অংশে পাওয়া যায়? — স্যাকুলাস
+### **Organ of Corti Location and Functions**
 
-ইউট্রিকুলাস → ভারসাম্য রক্ষা; স্যাকুলাস → শ্রবণ অনুভূতি সৃষ্টি।
+* **Location:** Found in the **স্যাকুলাস** (Sacculus) of the ear.
+* **Functional Differences:**
+  * **ইউট্রিকুলাস (Utriculus):** Responsible for **balancing** (**ভারসাম্য রক্ষা**).
+  * **স্যাকুলাস (Sacculus):** Responsible for creating the **sensation of hearing** (**শ্রবণ অনুভূতি সৃষ্টি**).
 
 ### Card 25
 <!-- color: #fff3a3 -->

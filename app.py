@@ -510,6 +510,46 @@ def ai_keep():
     exp = new if choice == "keep2" or not q["exp"].strip() else q["exp"].strip() + "\n\n---\n\n" + new
     update(b["file"], n, exp=exp)
     return jsonify(ok=True, explanation=exp)
+    
+
+# ---------------- AI card formatter ----------------
+REF_LINE = re.compile(
+    r"^[ \t]*(?:\*\*)?(?:references?|refs?|sources?|citations?|bibliography|তথ্যসূত্র|উৎস)"
+    r"(?:\*\*)?[ \t]*[:：\-–].*$", re.I | re.M)
+
+
+def strip_refs(t):
+    t = re.sub(r"\[\s*(?:ref(?:erence)?s?\.?\s*)?\d+(?:\s*[,\-–]\s*\d+)*\s*\]", "", t, flags=re.I)  # [1] [2,3] [ref 4]
+    t = re.sub(r"\[\^[^\]]*\]", "", t)                                   # [^1]
+    t = re.sub(r"\(\s*(?:ref|source)s?\b[^)]*\)", "", t, flags=re.I)     # (source: ...)
+    t = REF_LINE.sub("", t)                                              # "Reference: ..." lines
+    t = re.sub(r"[ \t]+\n", "\n", t)
+    return re.sub(r"\n{3,}", "\n\n", t).strip()
+
+
+@app.post("/api/ai/format-card")
+def ai_format_card():
+    body = (body_json().get("body") or "").strip()
+    if not body:
+        return jsonify(error="empty card"), 400
+    if len(body) > 8000:
+        return jsonify(error="card too long (max 8000 chars)"), 400
+    key = (request.headers.get("X-Gemini-Key") or os.environ.get("GEMINI_API_KEY", "")).strip()
+    model = (request.headers.get("X-Gemini-Model") or GEM_MODEL).strip()
+    prompt = ("Reformat this flashcard text as clean, compact markdown. Rules:\n"
+              "- Keep the same language (Bangla/English) and exact meaning; do not add or drop facts.\n"
+              "- Fix broken line breaks, spacing, bullets, numbering; use a table only if data is tabular.\n"
+              "- Bold key terms sparingly. Keep LaTeX ($...$), <u> and <mark> as is.\n"
+              "- Remove all references: [1], [^1], footnotes, citations, URLs used as sources, "
+              "'Reference/Source:' lines.\n"
+              "- No preamble, no code fences, no headings unless already present.\n\n"
+              "TEXT:\n" + body)
+    text = gemini(prompt, key, model)
+    text = re.sub(r"^```(?:markdown|md)?[ \t]*\n|\n```[ \t]*$", "", text.strip())
+    out = clean_body(strip_refs(text))
+    if not out:
+        raise AIError("Gemini returned an empty card.", 502)
+    return jsonify(body=out)
 
 
 # ---------------- routes ----------------

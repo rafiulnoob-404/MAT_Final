@@ -87,29 +87,15 @@ Ha-181; (ম্যালেরিয়া পরজীবীর জীবনচ
 মস্তিষ্কের চতুর্থ ভেন্ট্রিকল তৃতীয় ভেন্ট্রিকলের সাথে কোনটি দিয়ে সংযুক্ত থাকে? — সেরেব্রাল অ্যাকুইডাক্ট
 
 ### Card 16
-<!-- color: #fff3a3 -->
+<!-- color: #ead9ff -->
 
-Maternal antibody বলা হয় কোনটিকে? — IgG
+- **Maternal antibody**: <mark>IgG</mark> (passes through the placenta to the fetus)
+- **Secretory antibody**: <mark>IgA</mark> (found in mucosal areas, saliva, tears, and breast milk)
 
 ### Card 17
 <!-- color: #fff3a3 -->
 
 দ্রুত চলাচলের জন্য Hydra কোন চলন পদ্ধতি ব্যবহার করে? — Somersaulting
-
-### Card 18
-<!-- color: #fff3a3 -->
-
-জীবনের প্রতিনিধি বলা হয় কোনটিকে? — এনজাইম
-
-### Card 19
-<!-- color: #fff3a3 -->
-
-কোন কারণে শিশু জন্মগত পঙ্গু হয়ে জন্মায়? — সাইটোমেগালোভাইরাস
-
-### Card 20
-<!-- color: #fff3a3 -->
-
-নিচের কোন উপপর্বের অপর নাম Craniata ? — ভার্টিব্রাটা
 
 ### Card 21
 <!-- color: #ffd6e0 -->

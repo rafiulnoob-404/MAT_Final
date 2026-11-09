@@ -150,11 +150,11 @@ Maternal antibody বলা হয় কোনটিকে? — IgG
   * **স্যাকুলাস (Sacculus):** Responsible for creating the **sensation of hearing** (**শ্রবণ অনুভূতি সৃষ্টি**).
 
 ### Card 25
-<!-- color: #fff3a3 -->
+<!-- color: #d4f5dd -->
 
-সম্পূর্ণ রূপান্তরে শিশু অবস্থায় প্রাণিকে কী বলে? — লার্ভা
+**সম্পূর্ণ রূপান্তরে (Complete Metamorphosis)** শিশু অবস্থায় প্রাণিকে কী বলে? — **লার্ভা**
 
-নিম্ফ → অসম্পূর্ণ রূপান্তর।
+**নিম্ফ (Nymph)** → **অসম্পূর্ণ রূপান্তর** (Incomplete Metamorphosis) এর ক্ষেত্রে দেখা যায়।
 
 ### Card 26
 <!-- color: #fff3a3 -->
@@ -174,25 +174,52 @@ Maternal antibody বলা হয় কোনটিকে? — IgG
 - **জাইমোজেনিক কোষ:** **পেপসিনোজেন** ক্ষরণ করে।
 
 ### Card 29
-<!-- color: #fff3a3 -->
+<!-- color: #ffd6e0 -->
 
-Aj-538; (অনুশীলনী প্রশ্ন-০৬); উস্পোর ডিপ্লোয়েড কোষ। স্পোর, ডিম্বাণু ও পরাগরেণু হ্যাপ্লয়েড কোষ।
+| কোষের নাম | `Haploid cell` | `Diploid cell` |
+| --- | --- | --- |
+| **উস্পোর** (`Oospore`) | — | **ডিপ্লয়েড** কোষ |
+| **স্পোর** (`Spore`) | **হ্যাপ্লয়েড** কোষ | — |
+| **ডিম্বাণু** (`Ovum`) | **হ্যাপ্লয়েড** কোষ | — |
+| **পরাগরেণু** (`Pollen grain`) | **হ্যাপ্লয়েড** কোষ | — |
 
 ### Card 30
 <!-- color: #ffd6e0 -->
 
-### Optic Disc and Macula Lutea
+### অপটিক ডিস্ক এবং ম্যাকুলা লুটিয়া
 
-- **Optic Disc (`অপটিক ডিস্ক`):** Contains **no rods or cones**, hence called the **blind spot** (`অন্ধবিন্দু`).
-- **Macula Lutea (`ম্যাকুলা লুটিয়া`):** The **oval-shaped area** located just above the optic disc.
-- **Fovea Centralis (`ফোবিয়া সেন্ট্রালিস` / `পীতবিন্দু`):** The **depression at the center** of the macula lutea.
+- **অপটিক ডিস্ক (`Optic Disc`):** এখানে কোনো **রড ও কোন কোষ থাকে না**, তাই একে **অন্ধবিন্দু** (`Blind Spot`) বলা হয়।
+- **ম্যাকুলা লুটিয়া (`Macula Lutea`):** অপটিক ডিস্কের ঠিক ওপরে অবস্থিত **ডিম্বাকার অঞ্চল**।
+- **ফোবিয়া সেন্ট্রালিস (`Fovea Centralis` / পীতবিন্দু):** ম্যাকুলা লুটিয়ার **কেন্দ্রের মধ্যকার অবনমিত অংশ**।
 
 ### Card 31
 <!-- color: #fff3a3 -->
 
-Ha-55; (DNA অণুর রেপ্লিকেশন); DNA রেপ্লিকেশনে RNA পলিমারেজ অপ্রয়োজনীয়। এটি ট্রান্সক্রিপশন প্রক্রিয়ার প্রয়োজনীয় উপাদান।
+### DNA অণুর রেপ্লিকেশন
+
+* **RNA Polymerase** is **unnecessary** in DNA replication.
+* It is an essential component of the **transcription** process.
 
 ### Card 32
 <!-- color: #fff3a3 -->
 
-Alim-437; (মরুজ অভিযোজন); লিথোফাইট → পাথরের উপর জন্মায়; ইফিমেরালস → কৌশলে খরা এড়িয়ে চলা উদ্ভিদ; স্যামোফাইটস → বালি ও নুড়ির উপর জন্মায়।
+### মরুজ অভিযোজন
+* **লিথোফাইট:** **পাথরের উপর** জন্মায় উদ্ভিদ।
+* **ইফিমেরালস:** **কৌশলে খরা এড়িয়ে চলা** উদ্ভিদ।
+* **স্যামোফাইটস:** **বালি ও নুড়ির উপর** জন্মায় উদ্ভিদ।
+
+### Card 33
+<!-- color: #fff3a3 -->
+
+### Uses of Starch and Cellulose
+
+- **Starch (শ্বেতসার):** প্রধানত **খাদ্য** হিসেবে ব্যবহৃত হয়। এছাড়া **কাগজ** ও **আঠা** তৈরিতেও এটি ব্যবহৃত হয়।
+- **Cellulose (সেলুলোজ):** **বস্ত্র শিল্পের** প্রধান কাঁচামাল হিসেবে কাজ করে এবং **নাইট্রেট বিস্ফোরক** উৎপাদনে ব্যবহৃত হয়।
+
+### Card 34
+<!-- color: #ead9ff -->
+
+- **Surfactant Secretion Timeline**:
+   
+   - **23 weeks**: Surfactant is **first secreted** in the lungs.
+   - **Before 24 weeks**: Surfactant is **scarcely present** and functionally negligible.

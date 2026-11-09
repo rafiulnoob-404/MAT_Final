@@ -219,7 +219,7 @@ def create_blueprint(questions, lock):
                   "4. **Complete Reference Removal:** Strip out all references, book names, author names, "
                   "page numbers, and custom source codes completely, including source tags, citations, "
                   "footnotes, and brackets containing page, book, or topic references regardless of format "
-                  "(e.g., [Author 2026, p. 342], [Book, p. 217], Ha-315;, Alim-444;).\n"
+                  "(e.g., [আজমল স্যার-২০২৬, পৃ-৩৪২], [উন্মেষ মেডিট্রিক্স, পৃ-২১৭], Ha-315;, Alim-444;).\n"
                   "5. **Strict Output Constraints:** No preamble, conversational filler, or intros. "
                   "Do not use code fences around the final output. Output only the finalized flashcard content.\n\n"
                   "Flashcard Text:\n" + body)

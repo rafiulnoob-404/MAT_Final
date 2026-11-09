@@ -29,6 +29,7 @@ class PromptTests(unittest.TestCase):
                          "HTML <u> or <mark>", "What is 2 + 2?", "B. 4", "Correct answer: B"):
             self.assertIn(expected, prompt)
         self.assertNotIn("ANSWER: UNKNOWN", prompt)
+        self.assertFalse(any('\u0980' <= char <= '\u09ff' for char in prompt))
 
     def run_explain(self, answer, reply, options=None):
         questions = FakeQuestions(answer, options)
@@ -60,7 +61,8 @@ class PromptTests(unittest.TestCase):
         prompt = gemini.call_args.args[0]
         instructions, supplied = prompt.split("Flashcard Text:\n", 1)
         self.assertEqual(supplied, original)
-        self.assertFalse(any('\u0980' <= char <= '\u09ff' for char in instructions))
+        self.assertIn("[আজমল স্যার-২০২৬, পৃ-৩৪২]", instructions)
+        self.assertIn("[উন্মেষ মেডিট্রিক্স, পৃ-২১৭]", instructions)
         for rule in ("Romanized Bangla", "existing headings/headlines", "strictly tabular",
                      "<u>", "<mark>", "author names", "page numbers", "No preamble"):
             self.assertIn(rule, instructions)

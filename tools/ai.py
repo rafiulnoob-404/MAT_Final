@@ -87,11 +87,32 @@ def ai_prompt(question):
     options = "\n".join(f"{'ABCD'[i]}. {option}" for i, option in enumerate(question["opts"][:4]))
     index = ans_index(question)
     known = f"Correct answer: {'ABCD'[index]}" if 0 <= index < 4 else "Correct answer: unknown"
-    ask = "" if 0 <= index < 4 else "The first line must be exactly `ANSWER: <A|B|C|D>`, then a blank line.\n"
-    return ("You are an admission-test tutor. Explain this MCQ in the same language as the question "
-            "(Bangla or English). Output a short paragraph or a compact markdown table. HTML <u>/<mark> "
-            "and LaTeX ($...$) are allowed. No preamble, no headings.\n" + ask +
-            "\nQuestion:\n" + "\n".join(question["stem"]) + "\n\n" + options + "\n\n" + known)
+    # The machine-readable line is removed before the explanation is shown.
+    answer_instruction = "" if 0 <= index < 4 else (
+        "For the first line only, output exactly `ANSWER: A`, `ANSWER: B`, `ANSWER: C`, "
+        "`ANSWER: D`, or `ANSWER: UNKNOWN`. Use UNKNOWN when the answer is ambiguous or "
+        "not among the options. Follow it with a blank line, then the explanation.\n\n"
+    )
+    return ("You are a tutor of an admission candidate. Explain the given MCQ directly, "
+            "using the same language as the question (Bangla or English).\n\n"
+            "Output Format Rules:\n"
+            "1. **Style with Rich Formatting:** Do not output plain text. Use bullet points, "
+            "bold key terms (**text**), inline code highlights (`concept`), and subtle icons "
+            "(e.g., ✅, ❌, 💡) to make the text scannable and visually engaging.\n"
+            "2. **Explain the Correct Answer:** State the correct option clearly and explain "
+            "the underlying reasoning or formula behind it briefly.\n"
+            "3. **Eliminate Incorrect Options:** Explain briefly why each of the remaining "
+            "options is incorrect.\n"
+            "4. **Apply Formatting Syntax:** Use inline LaTeX ($...$) for mathematical or "
+            "scientific expressions, and HTML <u> or <mark> tags to emphasize key terms.\n"
+            "5. **Enforce Strict Constraints:** Exclude all intros, preambles, greetings, "
+            "and section headings. Begin the explanation directly on the first line.\n"
+            "6. **Provide a Mnemonic or Trick:** Include a catchy mnemonic, shortcut, or "
+            "memory trick if applicable to help retain the concept easily.\n"
+            "7. **Handle Errors and Missing Answers:** State any factual ambiguity, question "
+            "errors, or missing correct options explicitly, and provide the actual correct "
+            "answer if needed.\n\n" + answer_instruction +
+            "Question:\n" + "\n".join(question["stem"]) + "\n\n" + options + "\n\n" + known)
 
 
 def body_json():
@@ -140,9 +161,11 @@ def create_blueprint(questions, lock):
         model = (request.headers.get("X-Gemini-Model") or settings.GEM_MODEL).strip()
         text = gemini(ai_prompt(question), key, model)
         letter = ""
-        match = re.match(r"\s*ANSWER:\s*\(?([A-D])\)?[^\n]*\n?", text, re.I)
+        match = re.match(r"\A[ \t]*ANSWER:[ \t]*\(?([A-D]|UNKNOWN)\)?[ \t]*(?:\r?\n|$)", text, re.I)
         if match:
-            letter, text = match.group(1).upper(), text[match.end():]
+            answer, text = match.group(1).upper(), text[match.end():]
+            if answer in "ABCD" and len(answer) == 1 and "ABCD".index(answer) < len(question["opts"]):
+                letter = answer
         explanation = clean_exp(text)
         if not explanation:
             raise AIError("Gemini returned an empty explanation.", 502)
@@ -181,13 +204,25 @@ def create_blueprint(questions, lock):
             return jsonify(error="card too long (max 8000 chars)"), 400
         key = (request.headers.get("X-Gemini-Key") or os.environ.get("GEMINI_API_KEY", "")).strip()
         model = (request.headers.get("X-Gemini-Model") or settings.GEM_MODEL).strip()
-        prompt = ("Reformat this flashcard text as clean, compact markdown. Rules:\n"
-                  "- Keep the same language (Bangla/English) and exact meaning; do not add or drop facts.\n"
-                  "- Fix broken line breaks, spacing, bullets, numbering; use a table only if data is tabular.\n"
-                  "- Bold key terms sparingly. Keep LaTeX ($...$), <u> and <mark> as is.\n"
-                  "- Remove all references: [1], [^1], footnotes, citations, URLs used as sources, "
-                  "'Reference/Source:' lines.\n"
-                  "- No preamble, no code fences, no headings unless already present.\n\nTEXT:\n" + body)
+        prompt = ("Reformat and refine the provided flashcard text into clean, highly structured, and scannable Markdown.\n\n"
+                  "Strict Execution Rules:\n"
+                  "1. **Language & Accuracy:** Do NOT allow any Banglish (Romanized Bangla). "
+                  "Standardize the language into pure English or proper Bangla. Correct any grammatical errors, "
+                  "spelling mistakes, or incomplete sentences while retaining the original facts; "
+                  "do not introduce unsupported facts.\n"
+                  "2. **Structural Formatting:** Keep any existing headings/headlines intact. "
+                  "Format main concepts into concise paragraphs or clean Markdown bullet points. "
+                  "Use a compact table only if the data is strictly tabular.\n"
+                  "3. **Rich Text styling:** Bold key terms or style them using italics or inline code "
+                  "(`key term`) for clarity. In bullet points, bold primary keywords, examples, and key values. "
+                  "Preserve all existing inline LaTeX ($...$), <u>, and <mark> tags as they are.\n"
+                  "4. **Complete Reference Removal:** Strip out all references, book names, author names, "
+                  "page numbers, and custom source codes completely, including source tags, citations, "
+                  "footnotes, and brackets containing page, book, or topic references regardless of format "
+                  "(e.g., [Author 2026, p. 342], [Book, p. 217], Ha-315;, Alim-444;).\n"
+                  "5. **Strict Output Constraints:** No preamble, conversational filler, or intros. "
+                  "Do not use code fences around the final output. Output only the finalized flashcard content.\n\n"
+                  "Flashcard Text:\n" + body)
         text = gemini(prompt, key, model)
         text = re.sub(r"^```(?:markdown|md)?[ \t]*\n|\n```[ \t]*$", "", text.strip())
         output = clean_body(strip_refs(text))

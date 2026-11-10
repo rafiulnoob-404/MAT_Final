@@ -70,13 +70,15 @@ GitHub-backed storage is enabled only when both `GITHUB_TOKEN` and `DATA_REPO` a
 | `GEMINI_MODEL` | `gemini-flash-lite-latest` | Gemini model |
 | `PORT` | `5000` | Web server port |
 
-A Gemini key and model can also be supplied from the application's Settings screen.
+The Gemini key and model are configured only on the server (environment variables);
+they are no longer editable from the Settings screen.
 
 ## Main API groups
 
 - `/api/index`, `/api/questions`, `/api/file/<name>`, `/api/status` — questions
 - `/api/cards` — flashcards
-- `/api/ai/explain`, `/api/ai/keep`, `/api/ai/format-card` — Gemini features
+- `/api/ai/explain`, `/api/ai/keep`, `/api/ai/explanation`, `/api/ai/format-card` — Gemini features and explanation editing
+- `/api/ai/usage`, `/api/ai/usage/reset` — in-memory AI usage counters
 - `/healthz`, `/api/health`, `/system/health` — health checks
 - `/api/reload`, `/api/sync` — cache and GitHub synchronization
 
@@ -86,6 +88,12 @@ A Gemini key and model can also be supplied from the application's Settings scre
 - GitHub changes are cached and committed in the background.
 - The application currently has no built-in user authentication; deploy it behind appropriate access controls if it is internet-facing.
 - For GitHub-backed storage, use a single Gunicorn worker because the cache and sync queue are process-local.
+- AI explanations can be edited after they are generated: open **Explain with AI**, then use
+  the **✎ Edit** button in the solution box (or in the *New (AI)* column when comparing) to
+  change the text before or after saving. Edits are stored through `/api/ai/explanation`.
+- AI usage counters (requests, input tokens, output tokens, total tokens) live only in the
+  current process's RAM. They are shown in **Settings → AI usage** and reset to zero whenever
+  the server restarts or the process memory is cleared.
 
 ## Importing exam PDFs
 

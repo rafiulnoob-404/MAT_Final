@@ -4,6 +4,8 @@ from unittest.mock import patch
 
 from flask import Flask
 from tools.ai import ai_prompt, create_blueprint
+from tools.cards import parse_cards, serialize_cards
+from tools.questions import parse as parse_questions, serialize as serialize_questions
 
 
 class FakeQuestions:
@@ -26,8 +28,11 @@ class PromptTests(unittest.TestCase):
         prompt = ai_prompt(question)
         for expected in ("Style with Rich Formatting", "Eliminate Incorrect Options",
                          "Provide a Mnemonic or Trick", "Handle Errors and Missing Answers",
-                         "HTML <u> or <mark>", "What is 2 + 2?", "B. 4", "Correct answer: B"):
+                         "HTML <u> or <mark>", "instead of inline code backticks",
+                         "Markdown blockquotes (> ...)",
+                         "What is 2 + 2?", "B. 4", "Correct answer: B"):
             self.assertIn(expected, prompt)
+        self.assertNotIn("inline code highlights (`concept`)", prompt)
         self.assertNotIn("ANSWER: UNKNOWN", prompt)
         self.assertFalse(any('\u0980' <= char <= '\u09ff' for char in prompt))
 
@@ -63,9 +68,12 @@ class PromptTests(unittest.TestCase):
         self.assertEqual(supplied, original)
         self.assertIn("[আজমল স্যার-২০২৬, পৃ-৩৪২]", instructions)
         self.assertIn("[উন্মেষ মেডিট্রিক্স, পৃ-২১৭]", instructions)
-        for rule in ("Romanized Bangla", "existing headings/headlines", "strictly tabular",
-                     "<u>", "<mark>", "author names", "page numbers", "No preamble"):
+        for rule in ("Banglish", "existing headings/headlines", "strictly tabular",
+                     "Markdown blockquotes (> ...)", "Preserve existing blockquotes",
+                     "<u>", "<mark>", "instead of inline code backticks",
+                     "author names", "page numbers", "No preamble"):
             self.assertIn(rule, instructions)
+        self.assertNotIn("inline code (`key term`)", instructions)
         self.assertEqual(response.get_json()['body'], '**Fact**')
 
     def test_does_not_save_nonexistent_or_existing_option(self):
@@ -73,6 +81,29 @@ class PromptTests(unittest.TestCase):
         self.assertEqual(question['ans'], '')
         question, _ = self.run_explain("A", "ANSWER: B\n\n- The key may be wrong.")
         self.assertEqual(question['ans'], 'A')
+
+    def test_blockquote_and_mark_round_trip(self):
+        exp = (
+            "* ❌ **একটি:** একটি নিউক্লিয়াস থাকে মসৃণ পেশিতে (<mark>Smooth muscle</mark>)।\n\n"
+            "🧠 **স্মরণ রাখার শর্টকাট / ট্রিক (Mnemonic):**\n"
+            "> <mark>**S**keletal = **S**ynctium (বহুকেন্দ্রিক)</mark>\n"
+            "> অর্থাৎ, **অসংখ্য** (<mark>Multiple</mark>)!"
+        )
+        questions = FakeQuestions("A")
+        app = Flask(__name__)
+        app.register_blueprint(create_blueprint(questions, threading.RLock()))
+        res = app.test_client().post('/api/ai/explanation',
+                                     json={"file": "U_ON_P_B_2.md", "n": 1, "text": exp})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.get_json()['explanation'], exp)
+
+        md_doc = serialize_questions("", [questions.question])
+        _, parsed_qs = parse_questions(md_doc)
+        self.assertEqual(parsed_qs[0]['exp'], exp)
+
+        card_doc = serialize_cards([{"id": 1, "color": "#fff3a3", "body": exp}])
+        parsed_cards = parse_cards(card_doc)
+        self.assertEqual(parsed_cards[0]['body'], exp)
 
 
 if __name__ == '__main__':

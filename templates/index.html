@@ -37,6 +37,7 @@ u,ins{text-decoration:underline;text-decoration-color:currentColor;text-decorati
 .tile:active{box-shadow:inset 4px 4px 9px var(--s1),inset -4px -4px 9px var(--s2)}
 .track{height:10px;width:100%;border-radius:6px;background:var(--bg);box-shadow:inset 2px 2px 5px var(--s1),inset -2px -2px 5px var(--s2);overflow:hidden}
 .track i{display:block;height:100%;border-radius:6px;background:var(--ac)}
+.cnt-n,.rt{font-variant-numeric:tabular-nums}
 .chips{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
 .chip,.btn,select{background:var(--bg);border:0;color:var(--tx);border-radius:999px;padding:8px 18px;font:inherit;font-weight:600;cursor:pointer;box-shadow:5px 5px 11px var(--s1),-5px -5px 11px var(--s2)}
 .chip.on,.seg button.on{box-shadow:inset 3px 3px 7px var(--s1),inset -3px -3px 7px var(--s2);color:var(--ac);font-weight:800}
@@ -266,6 +267,7 @@ const math=el=>{try{renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',di
 function tab(t){
  if(t!=='questions'&&timer){cancelT();cur++;show()}
  if(t!=='cards')stopType();
+ if(t!=='dash')cancelAnimationFrame(dashRaf);
  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!=='t-'+t);
  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
  localStorage.tab=t;scrollTo(0,0);
@@ -280,28 +282,52 @@ const pc=(x,y)=>y?Math.round(x/y*100):0;
 function stats(L){let c=0,i=0,s=0;L.forEach(q=>{q.st==='correct'?c++:q.st==='incorrect'?i++:q.st==='skipped'&&s++});return{t:L.length,c,i,s,a:c+i+s}}
 function ring(p,size=92){
  const r=size*.4,c=2*Math.PI*r,s=size/2;
- return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${s}" cy="${s}" r="${r}" fill="none" style="stroke:var(--track)" stroke-width="8"/>${p>0?`<circle cx="${s}" cy="${s}" r="${r}" fill="none" style="stroke:var(--ac)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 ${s} ${s})"/>`:''}<text x="${s}" y="${s}" text-anchor="middle" dominant-baseline="central" class="rt">${p}%</text></svg>`}
+ return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${s}" cy="${s}" r="${r}" fill="none" style="stroke:var(--track)" stroke-width="8"/>${p>0?`<circle class="rp" data-c="${c}" data-p="${p}" cx="${s}" cy="${s}" r="${r}" fill="none" style="stroke:var(--ac)" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 ${c}" transform="rotate(-90 ${s} ${s})"/>`:''}<text x="${s}" y="${s}" text-anchor="middle" dominant-baseline="central" class="rt">0%</text></svg>`}
 const sbk=q=>q.ph==='MT'?'MT':q.sb;
 
+let dashRaf=0;
 function dash(){
+ cancelAnimationFrame(dashRaf);
  const a=stats(IDX),files=FILES.length,acc=pc(a.c,a.c+a.i),att=pc(a.a,a.t);
  const R=48,C=2*Math.PI*R;let off=0;
- const arc=(n,v)=>{const l=a.t?n/a.t*C:0,e=`<circle r="${R}" cx="62" cy="62" fill="none" style="stroke:var(${v})" stroke-width="14" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-off}" transform="rotate(-90 62 62)"/>`;off+=l;return e};
+ const arc=(n,v)=>{const l=a.t?n/a.t*C:0,o=off;off+=l;return l>0?`<circle class="da" data-l="${l}" data-o="${o}" data-c="${C}" r="${R}" cx="62" cy="62" fill="none" style="stroke:var(${v})" stroke-width="14" stroke-dasharray="0 ${C}" stroke-dashoffset="0" transform="rotate(-90 62 62)"/>`:''};
  $('#meta').textContent=`${files} files · ${a.t} questions`;
+ const cnt=n=>`<span class="cnt-n" data-n="${n}">0</span>`;
  const coach=['U','R'].map(k=>{const L=IDX.filter(q=>q.co===k),s=stats(L),f=FILES.filter(x=>x.co===k).length;
-  return `<div class="card rc"><span class="rwrap">${ring(pc(s.c,s.c+s.i),84)}</span><div><b>${CO[k]}</b><div class="mut">${s.t} Q · ${f} files</div><div class="mut">${s.a}/${s.t} attempted</div><div class="mut"><span class="up">${s.c}</span> / <span class="dn">${s.i}</span> / <span class="sk">${s.s}</span></div></div></div>`}).join('');
+  return `<div class="card rc"><span class="rwrap">${ring(pc(s.c,s.c+s.i),84)}</span><div><b>${CO[k]}</b><div class="mut">${cnt(s.t)} Q · ${cnt(f)} files</div><div class="mut">${cnt(s.a)}/${cnt(s.t)} attempted</div><div class="mut"><span class="up">${cnt(s.c)}</span> / <span class="dn">${cnt(s.i)}</span> / <span class="sk">${cnt(s.s)}</span></div></div></div>`}).join('');
  $('#ov').innerHTML=`
-  <div class="g2"><div class="card"><div class="big">${a.t}</div><div class="mut">Total questions</div></div><div class="card click" id="gofiles"><div class="big">${files}</div><div class="mut">Total files ›</div></div></div>
-  <div class="g2"><div class="card rc"><span class="rwrap">${ring(acc)}</span><div><div class="mut">Accuracy</div><div class="mut">${a.c} / ${a.c+a.i}</div></div></div>
-  <div class="card rc"><span class="rwrap">${ring(att)}</span><div><div class="mut">Attempted</div><div class="mut">${a.a} / ${a.t}</div></div></div></div>
+  <div class="g2"><div class="card"><div class="big">${cnt(a.t)}</div><div class="mut">Total questions</div></div><div class="card click" id="gofiles"><div class="big">${cnt(files)}</div><div class="mut">Total files ›</div></div></div>
+  <div class="g2"><div class="card rc"><span class="rwrap">${ring(acc)}</span><div><div class="mut">Accuracy</div><div class="mut">${cnt(a.c)} / ${cnt(a.c+a.i)}</div></div></div>
+  <div class="card rc"><span class="rwrap">${ring(att)}</span><div><div class="mut">Attempted</div><div class="mut">${cnt(a.a)} / ${cnt(a.t)}</div></div></div></div>
   <div class="g2">${coach}</div>
   <div class="card donut"><span class="rwrap" style="padding:12px"><svg width="124" height="124" viewBox="0 0 124 124"><circle r="${R}" cx="62" cy="62" fill="none" style="stroke:var(--track)" stroke-width="14"/>${arc(a.c,'--ok')}${arc(a.i,'--bad')}${arc(a.s,'--amb')}</svg></span>
-  <div class="leg"><div><b class="up">${a.c}</b> correct</div><div><b class="dn">${a.i}</b> incorrect</div><div><b class="sk">${a.s}</b> skipped</div><div><b>${a.t-a.a}</b> unattempted</div></div></div>`;
+  <div class="leg"><div><b class="up">${cnt(a.c)}</b> correct</div><div><b class="dn">${cnt(a.i)}</b> incorrect</div><div><b class="sk">${cnt(a.s)}</b> skipped</div><div><b>${cnt(a.t-a.a)}</b> unattempted</div></div></div>`;
  $('#gofiles').onclick=()=>tab('files');
  $('#sb').innerHTML=Object.keys(SL).map(k=>{
   const L=IDX.filter(q=>sbk(q)===k),s=stats(L),f=new Set(L.map(q=>q.f)).size;
-  return`<button class="card tile" data-k="${k}"><span class="rwrap">${ring(pc(s.c,s.c+s.i),84)}</span><b>${SL[k]}</b><span class="mut">${s.a}/${s.t} done · ${f} files</span><div class="track"><i style="width:${pc(s.a,s.t)}%"></i></div></button>`}).join('');
- $('#sb').querySelectorAll('.tile').forEach(b=>b.onclick=()=>{const k=b.dataset.k;F={co:'all',mo:'all',ph:k==='MT'?'MT':'all',sb:new Set(k==='MT'?[]:[k])};fUI();tab('questions');build()})}
+  return`<button class="card tile" data-k="${k}"><span class="rwrap">${ring(pc(s.c,s.c+s.i),84)}</span><b>${SL[k]}</b><span class="mut">${cnt(s.a)}/${cnt(s.t)} done · ${cnt(f)} files</span><div class="track"><i data-w="${pc(s.a,s.t)}" style="width:0%"></i></div></button>`}).join('');
+ $('#sb').querySelectorAll('.tile').forEach(b=>b.onclick=()=>{const k=b.dataset.k;F={co:'all',mo:'all',ph:k==='MT'?'MT':'all',sb:new Set(k==='MT'?[]:[k])};fUI();tab('questions');build()});
+ const root=$('#t-dash');
+ const nums=[...root.querySelectorAll('.cnt-n')].map(el=>[el,+el.dataset.n]);
+ const rings=[...root.querySelectorAll('.rp')].map(el=>[el,el.parentElement.querySelector('.rt'),+el.dataset.c,+el.dataset.p]);
+ const arcs=[...root.querySelectorAll('.da')].map(el=>[el,+el.dataset.l,+el.dataset.o,+el.dataset.c]);
+ const bars=[...root.querySelectorAll('.track i')].map(el=>[el,+el.dataset.w]);
+ const draw=e=>{
+  for(const[el,n]of nums)el.textContent=Math.round(n*e);
+  for(const[el,tx,c,p]of rings){const v=p*e;el.setAttribute('stroke-dasharray',`${c*v/100} ${c}`);if(tx)tx.textContent=Math.round(v)+'%'}
+  for(const[el,l,o,c]of arcs){const v=l*e;el.setAttribute('stroke-dasharray',`${v} ${c-v}`);el.setAttribute('stroke-dashoffset',`${-o*e}`)}
+  for(const[el,w]of bars)el.style.width=(w*e).toFixed(2)+'%'
+ };
+ const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(root.hidden||reduce||(!a.t&&!files)){draw(1);return}
+ draw(0);
+ const t0=performance.now(),dur=1350;
+ const step=now=>{
+  const t=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-t,3);
+  draw(e);
+  if(t<1)dashRaf=requestAnimationFrame(step);else dashRaf=0
+ };
+ dashRaf=requestAnimationFrame(step)}
 
 /* filters */
 const STF=[['new','Unattempted'],['all','All questions'],['incorrect','Incorrect'],['skipped','Skipped'],['correct','Correct']];

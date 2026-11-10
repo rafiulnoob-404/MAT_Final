@@ -61,6 +61,12 @@ u,ins{text-decoration:underline;text-decoration-color:currentColor;text-decorati
 #xet{width:100%;min-height:240px;max-height:52vh;resize:vertical;border:0;border-radius:16px;padding:14px;background:var(--bg);color:var(--tx);font:inherit;line-height:1.65;outline:none;box-shadow:inset 3px 3px 7px var(--s1),inset -3px -3px 7px var(--s2)}
 .md table{border-collapse:collapse;margin:8px 0}.md td,.md th{border:1px solid var(--track);padding:4px 10px}
 .md p{margin:0 0 .5em}.md ul,.md ol{margin:0 0 .5em 1.3em}.md h3,.md h2{font-size:1.05rem;margin:.3em 0}
+.md blockquote,.stem blockquote,#edit blockquote{margin:.55em 0;padding:8px 14px;border-left:4px solid var(--ac);background:rgba(128,136,170,.10);border-radius:0 12px 12px 0}
+.md blockquote>:last-child,.stem blockquote>:last-child,#edit blockquote>:last-child{margin-bottom:0}
+.md code,#edit code{background:rgba(128,136,170,.16);padding:1px 5px;border-radius:5px;font-size:.92em}
+.md pre,#edit pre{background:rgba(128,136,170,.14);padding:10px 12px;border-radius:12px;overflow-x:auto;margin:.5em 0}
+.md pre code,#edit pre code{background:none;padding:0}
+.md hr{border:0;border-top:1px solid var(--track);margin:.8em 0}
 mark{background:#ffe14d;color:#1b2440;border-radius:3px;padding:0 2px}
 .acts{display:flex;gap:14px;margin-top:16px;flex-wrap:wrap;align-items:center}
 .dd{position:relative}
@@ -92,6 +98,8 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border:0;border-radiu
 .note .nb{font-size:1.05rem;word-break:break-word}
 .note.lg{max-width:620px;margin:16px auto 0;font-size:1.15rem;padding:28px 24px 22px;min-height:200px}
 .note td,.note th{border-color:rgba(0,0,0,.3)}
+.note blockquote,.note .md blockquote,.note.md blockquote{border-left-color:rgba(27,36,64,.45);background:rgba(0,0,0,.06)}
+.note code,.note .md code,.note.md code,.note pre,.note .md pre,.note.md pre{background:rgba(0,0,0,.08)}
 .na{display:flex;gap:10px}.na button{border:0;background:rgba(0,0,0,.08);border-radius:999px;font:inherit;font-size:.78rem;font-weight:700;padding:3px 12px;cursor:pointer;color:#1b2440}
 .modal{position:fixed;inset:0;background:rgba(10,12,25,.55);z-index:40;display:grid;place-items:center;padding:14px}
 .mbox{width:100%;max-width:640px;max-height:92vh;overflow:auto}
@@ -197,7 +205,7 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
  <h3 id="edt">New card</h3>
  <div class="tbar" id="tbar">
   <button data-c="bold"><b>B</b></button><button data-c="italic"><i>I</i></button><button data-c="underline"><u>U</u></button><button data-c="strikeThrough"><s>S</s></button>
-  <button data-c="h">Heading</button><button data-c="insertUnorderedList">• List</button><button data-c="insertOrderedList">1. List</button>
+  <button data-c="h">Heading</button><button data-c="quote">❝ Quote</button><button data-c="insertUnorderedList">• List</button><button data-c="insertOrderedList">1. List</button>
   <button data-c="mark"><mark>Highlight</mark></button><button data-c="table">Table</button><button data-c="ai">✨ AI format</button><button data-c="clear">Clear</button>
  </div>
  <div id="edit" contenteditable="true"></div>
@@ -211,7 +219,7 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
 <div class="modal" id="xe" hidden><div class="card mbox">
  <h3>Edit explanation</h3><p class="mut" id="xem"></p>
  <textarea id="xet" spellcheck="true"></textarea>
- <p class="mut">Markdown, $LaTeX$, &lt;u&gt; and &lt;mark&gt; tags are supported. Ctrl/⌘+Enter saves.</p>
+ <p class="mut">Markdown, &gt; blockquotes, $LaTeX$, &lt;u&gt; and &lt;mark&gt; tags are supported. Ctrl/⌘+Enter saves.</p>
  <div class="acts"><button class="btn p" id="xesave">Save</button><button class="btn" id="xecancel">Cancel</button></div>
 </div></div>
 <div id="toast"></div>
@@ -241,7 +249,7 @@ const one=s=>(s||'').replace(/\s*\n\s*/g,' ').trim();
 
 function md(s,inline,br){
  s=(s||'').replace(/\\\\(?=[a-zA-Z]{2,}|[()\[\]])/g,'\\');
- s=s.replace(/&lt;(\/?)u&gt;/gi,'<$1u>');
+ s=s.replace(/&lt;(\/?)(u|mark)&gt;/gi,'<$1$2>');
  const ph=[];
  s=s.replace(/\$\$[\s\S]+?\$\$|\$[^$\n]+?\$|\\\([\s\S]+?\\\)|\\\[[\s\S]+?\\\]/g,m=>(ph.push(m.replace(/\\+_/g,'_')),'@@'+(ph.length-1)+'@@'));
  s=inline?marked.parseInline(s,{breaks:!!br}):marked.parse(s,{breaks:!!br});
@@ -361,7 +369,7 @@ async function pick(i){
  else await mark(q,i===a?'correct':'incorrect')}
 function sol(q){
  if(q!==curQ||!$('#sol'))return;
- $('#sol').innerHTML=`<div class="sol inset"><div class="shd"><h4>Solution</h4><button class="lnk" id="xed">${q.exp?'✎ Edit':'✎ Add explanation'}</button></div>${q.ans>=0?`<p class="mut">Answer: ${'ABCD'[q.ans]}</p>`:''}<div class="md">${q.exp?md(q.exp):'<p class="mut">No explanation.</p>'}</div></div>`;
+ $('#sol').innerHTML=`<div class="sol inset"><div class="shd"><h4>Solution</h4><button class="lnk" id="xed">${q.exp?'✎ Edit':'✎ Add explanation'}</button></div>${q.ans>=0?`<p class="mut">Answer: ${'ABCD'[q.ans]}</p>`:''}<div class="md">${q.exp?md(q.exp,0,1):'<p class="mut">No explanation.</p>'}</div></div>`;
  $('#xed').onclick=()=>editExp(q.exp||'',`${q.file.replace('.md','')} · Q${q.n}`,async text=>{
   const r=await post('/api/ai/explanation',{file:q.file,n:q.n,text});
   q.exp=r.explanation;if(typeof r.ans==='number'&&r.ans>=0)q.ans=r.ans;
@@ -406,7 +414,7 @@ async function ai(q){
  finally{const x=$('#aib');if(x){x.disabled=false;x.textContent='Explain with AI'}}}
 function renderCmp(){
  const q=cmpQ;if(!q)return;
- $('#cmpb').innerHTML=`<div class="cmpg"><div><h4>1 · Existing</h4><div class="sol inset md">${md(q.exp)}</div></div><div><div class="shd"><h4>2 · New (AI)</h4><button class="lnk" id="xec">✎ Edit</button></div><div class="sol inset md">${md(cmpNew)}</div></div></div>`;
+ $('#cmpb').innerHTML=`<div class="cmpg"><div><h4>1 · Existing</h4><div class="sol inset md">${md(q.exp,0,1)}</div></div><div><div class="shd"><h4>2 · New (AI)</h4><button class="lnk" id="xec">✎ Edit</button></div><div class="sol inset md">${md(cmpNew,0,1)}</div></div></div>`;
  math($('#cmpb'));
  $('#xec').onclick=()=>editExp(cmpNew,`${q.file.replace('.md','')} · Q${q.n}`,async text=>{
   cmpNew=text;renderCmp();toast('Edited — choose Keep to save',1)})}
@@ -477,6 +485,18 @@ $('#tbar').onclick=async e=>{
   catch(e){toast('AI failed: '+e)}
   b.disabled=false;b.textContent='✨ AI format';return}
  if(c==='h')document.execCommand('formatBlock',false,document.queryCommandValue('formatBlock').toLowerCase()==='h3'?'div':'h3');
+ else if(c==='quote'){
+  const sel=getSelection(),n=sel.rangeCount?sel.getRangeAt(0).commonAncestorContainer:null;
+  const bq=(n&&n.nodeType===3?n.parentElement:n)?.closest?.('#edit blockquote');
+  if(bq){
+   const frag=document.createDocumentFragment();
+   while(bq.firstChild){
+    const ch=bq.firstChild;
+    if(ch.nodeType===1&&/^(P|DIV|H[1-6]|UL|OL|TABLE|BLOCKQUOTE)$/.test(ch.tagName))frag.append(ch);
+    else{const d=document.createElement('div');d.append(ch);while(bq.firstChild&&!(bq.firstChild.nodeType===1&&/^(P|DIV|H[1-6]|UL|OL|TABLE|BLOCKQUOTE)$/.test(bq.firstChild.tagName)))d.append(bq.firstChild);frag.append(d)}
+   }
+   bq.replaceWith(frag);
+  }else document.execCommand('formatBlock',false,'blockquote')}
  else if(c==='mark'){const t=getSelection().toString();if(t)document.execCommand('insertHTML',false,'<mark>'+esc(t)+'</mark>')}
  else if(c==='table'){
   const v=(prompt('Rows x Columns','3x2')||'').match(/(\d+)\s*[x×*,]\s*(\d+)/i);if(!v)return;
@@ -507,9 +527,14 @@ function h2m(root){
    case's':case'strike':case'del':return wrap(kids(n),'~~');
    case'u':return'<u>'+kids(n)+'</u>';
    case'mark':return'<mark>'+kids(n)+'</mark>';
+   case'pre':return'\n\n```\n'+n.textContent.replace(/\u00a0/g,' ').trimEnd()+'\n```\n\n';
    case'code':return'`'+kids(n)+'`';
    case'br':return'\n';
    case'h1':case'h2':case'h3':case'h4':case'h5':case'h6':return'\n\n'+'#'.repeat(+t[1])+' '+kids(n).trim()+'\n\n';
+   case'blockquote':{
+    const inner=kids(n).replace(/\n{3,}/g,'\n\n').trim();
+    if(!inner)return'';
+    return'\n\n'+inner.split('\n').map(l=>l?'> '+l:'>').join('\n')+'\n\n'}
    case'ul':case'ol':return'\n\n'+[...n.children].filter(x=>x.tagName==='LI').map((li,i)=>(t==='ol'?(i+1)+'. ':'- ')+kids(li).trim().replace(/\n/g,'\n   ')).join('\n')+'\n\n';
    case'table':{
     const rows=[...n.querySelectorAll('tr')].map(r=>[...r.children].map(c=>kids(c).trim().replace(/\n+/g,'<br>').replace(/\|/g,'\\|')||' '));
@@ -553,7 +578,7 @@ $('#pdf-form').onsubmit=async e=>{
  finally{result.hidden=false;btn.disabled=false;btn.textContent='Convert & save'}
 };
 
-function fileCard(q){return`<div class="card q"><div class="qh"><span>Q${q.n}</span><span class="${sc(q.st)}">${q.st||'new'}</span></div><div class="stem">${md(q.stem)}</div>${q.opts.map((o,i)=>`<div class="opt done${i===q.ans?' ok':''}"><b>${'ABCD'[i]||i+1}</b><span>${md(o,1)}</span></div>`).join('')}${q.exp?`<div class="sol inset md">${md(q.exp)}</div>`:''}</div>`}
+function fileCard(q){return`<div class="card q"><div class="qh"><span>Q${q.n}</span><span class="${sc(q.st)}">${q.st||'new'}</span></div><div class="stem">${md(q.stem)}</div>${q.opts.map((o,i)=>`<div class="opt done${i===q.ans?' ok':''}"><b>${'ABCD'[i]||i+1}</b><span>${md(o,1)}</span></div>`).join('')}${q.exp?`<div class="sol inset md">${md(q.exp,0,1)}</div>`:''}</div>`}
 async function openFile(n){
  const L=IDX.filter(q=>q.f===n),s=stats(L);let off=0;
  $('#files-list').hidden=true;$('#pdf-view').hidden=true;$('#fv').hidden=false;

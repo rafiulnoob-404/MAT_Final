@@ -53,11 +53,11 @@ Ha-130 (উদ্ধৃত বা উৎপাদিত লিপিড):
 - আলু ও চুপরি আলুতে $\rightarrow$ কোলেস্টেরল পাওয়া যায়
 
 ### Card 10
-<!-- color: #fff3a3 -->
+<!-- color: #d4f5dd -->
 
-intrastelar region এর অংশ নিচের কোনটি? — পরিচক্র, মজ্জা
+### Which of the following is a part of the intrastelar region? — Pericycle, Pith
 
-Ha-277; (গ্রাউন্ড টিস্যুতন্ত্র); পরিচক্র, মজ্জা, মজ্জারশ্মি ও সংযোজক টিস্যু অন্তঃস্টিলীয় অঞ্চলের অন্তর্গত।
+- **Intrastelar region (অন্তঃস্টিলী অঞ্চল)** এর উপাদানসমূহের মধ্যে রয়েছে **pericycle (পেরিসাইকেল)**, **pith (মজ্জা)**, **pith rays (মজ্জারশ্মি)** এবং **connective tissue (সংযোজক টিস্যু)**।
 
 ### Card 11
 <!-- color: #d6e8ff -->

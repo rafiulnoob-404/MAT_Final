@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -12,6 +13,58 @@ from tools.cards import clean_body
 from tools.questions import ans_index, parse_name
 
 MODEL_OK = re.compile(r"^[A-Za-z0-9._\-]{1,64}$")
+
+# In-memory usage counters for this process only. They intentionally live in RAM:
+# a server restart (or a lost process) resets them to zero.
+USAGE_LOCK = threading.Lock()
+USAGE_SINCE = time.time()
+USAGE = {
+    "requests": 0,      # HTTP calls attempted against the Gemini API (retries included)
+    "failed": 0,        # calls that ended in an error
+    "prompt_tokens": 0,  # input tokens reported by usageMetadata
+    "output_tokens": 0,  # generated tokens reported by usageMetadata
+    "total_tokens": 0,
+    "last_model": "",
+    "last_at": None,
+}
+
+
+def _iso(timestamp):
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(timestamp)) if timestamp else None
+
+
+def record_usage(model, payload=None, failed=False):
+    """Count one Gemini HTTP call and, on success, add its token usage."""
+    with USAGE_LOCK:
+        USAGE["requests"] += 1
+        if failed:
+            USAGE["failed"] += 1
+        USAGE["last_model"] = model or ""
+        USAGE["last_at"] = time.time()
+        if payload:
+            meta = payload.get("usageMetadata") or {}
+            prompt = int(meta.get("promptTokenCount") or 0)
+            output = int(meta.get("candidatesTokenCount") or 0)
+            total = int(meta.get("totalTokenCount") or 0) or (
+                prompt + output + int(meta.get("thoughtsTokenCount") or 0))
+            USAGE["prompt_tokens"] += prompt
+            USAGE["output_tokens"] += output
+            USAGE["total_tokens"] += total
+
+
+def usage_snapshot():
+    with USAGE_LOCK:
+        data = dict(USAGE, since=_iso(USAGE_SINCE))
+    data["last_at"] = _iso(data["last_at"])
+    return data
+
+
+def reset_usage():
+    global USAGE_SINCE
+    with USAGE_LOCK:
+        for key in USAGE:
+            USAGE[key] = 0 if isinstance(USAGE[key], int) else ("" if key == "last_model" else None)
+        USAGE_SINCE = time.time()
 
 class AIError(Exception):
     def __init__(self, message, code=502):
@@ -49,8 +102,10 @@ def gemini(prompt, key, model):
         try:
             with urllib.request.urlopen(req, timeout=60) as response:
                 payload = json.load(response)
+            record_usage(model, payload if isinstance(payload, dict) else None)
             break
         except urllib.error.HTTPError as error:
+            record_usage(model, failed=True)
             message = gem_err_text(error)
             if error.code in (429, 500, 502, 503, 504) and attempt < 2:
                 time.sleep(2 * (attempt + 1))
@@ -58,6 +113,7 @@ def gemini(prompt, key, model):
             code = 429 if error.code == 429 else 400 if error.code in (400, 401, 403, 404) else 502
             raise AIError(message, code)
         except (urllib.error.URLError, OSError, ValueError) as error:
+            record_usage(model, failed=True)
             message = f"Could not reach Gemini: {getattr(error, 'reason', error)}"
             if attempt < 2:
                 time.sleep(1.5)
@@ -195,6 +251,20 @@ def create_blueprint(questions, lock):
         return jsonify(ok=True, explanation=explanation)
 
 
+    @bp.post("/api/ai/explanation")
+    def ai_save_explanation():
+        """Store a manually edited explanation for a question."""
+        body = body_json()
+        text = clean_exp(body.get("text"))
+        if not text:
+            return jsonify(error="empty explanation"), 400
+        if len(text) > 20000:
+            return jsonify(error="explanation too long (max 20000 chars)"), 400
+        number, _ = get_question(body.get("file"), body.get("n"), questions, lock)
+        updated = questions.update(body["file"], number, exp=text)
+        return jsonify(ok=True, explanation=updated["exp"], ans=ans_index(updated))
+
+
     @bp.post("/api/ai/format-card")
     def ai_format_card():
         body = (body_json().get("body") or "").strip()
@@ -229,6 +299,19 @@ def create_blueprint(questions, lock):
         if not output:
             raise AIError("Gemini returned an empty card.", 502)
         return jsonify(body=output)
+
+
+    @bp.get("/api/ai/usage")
+    def ai_usage():
+        # Process-local counters: vanished on restart / RAM clear.
+        return jsonify(**usage_snapshot(),
+                       model=settings.GEM_MODEL,
+                       server_key=bool(os.environ.get("GEMINI_API_KEY")))
+
+    @bp.post("/api/ai/usage/reset")
+    def ai_usage_reset():
+        reset_usage()
+        return jsonify(ok=True, **usage_snapshot())
 
 
     return bp

@@ -151,12 +151,12 @@ Ha-181; (ম্যালেরিয়া পরজীবীর জীবনচ
 ### Card 29
 <!-- color: #ffd6e0 -->
 
-| কোষের নাম | `Haploid cell` | `Diploid cell` |
+| Cell Name | <mark>Haploid cell</mark> | <mark>Diploid cell</mark> |
 | --- | --- | --- |
-| **উস্পোর** (`Oospore`) | — | **ডিপ্লয়েড** কোষ |
-| **স্পোর** (`Spore`) | **হ্যাপ্লয়েড** কোষ | — |
-| **ডিম্বাণু** (`Ovum`) | **হ্যাপ্লয়েড** কোষ | — |
-| **পরাগরেণু** (`Pollen grain`) | **হ্যাপ্লয়েড** কোষ | — |
+| **Oospore** | — | **Diploid** cell |
+| **Spore** | **Haploid** cell | — |
+| **Ovum** | **Haploid** cell | — |
+| **Pollen grain** | **Haploid** cell | — |
 
 ### Card 30
 <!-- color: #ffd6e0 -->

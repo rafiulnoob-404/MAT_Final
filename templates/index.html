@@ -100,6 +100,12 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border:0;border-radiu
 .note td,.note th{border-color:rgba(0,0,0,.3)}
 .note blockquote,.note .md blockquote,.note.md blockquote{border-left-color:rgba(27,36,64,.45);background:rgba(0,0,0,.06)}
 .note code,.note .md code,.note.md code,.note pre,.note .md pre,.note.md pre{background:rgba(0,0,0,.08)}
+.cursor{display:inline-block;width:2px;height:1.05em;margin-left:2px;vertical-align:-.14em;background:var(--ac);border-radius:2px;animation:blink .9s steps(1) infinite}
+.note .cursor{background:#1b2440}
+@keyframes blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.cursor{animation:none}}
+.tw-h{display:none!important}
+.note.lg.typing{cursor:pointer}
 .na{display:flex;gap:10px}.na button{border:0;background:rgba(0,0,0,.08);border-radius:999px;font:inherit;font-size:.78rem;font-weight:700;padding:3px 12px;cursor:pointer;color:#1b2440}
 .modal{position:fixed;inset:0;background:rgba(10,12,25,.55);z-index:40;display:grid;place-items:center;padding:14px}
 .mbox{width:100%;max-width:640px;max-height:92vh;overflow:auto}
@@ -259,6 +265,7 @@ const math=el=>{try{renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',di
 /* tabs */
 function tab(t){
  if(t!=='questions'&&timer){cancelT();cur++;show()}
+ if(t!=='cards')stopType();
  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!=='t-'+t);
  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
  localStorage.tab=t;scrollTo(0,0);
@@ -437,9 +444,83 @@ async function addCard(q,m){
  catch(e){toast('Card save failed: '+e)}}
 
 /* flashcards (never shuffled) */
-let C=[],deck=[],di=0,edId=null,edColor='#fff3a3';
+let C=[],deck=[],di=0,edId=null,edColor='#fff3a3',twTimer=null,twStop=null;
 const CC=['#fff3a3','#ffd6e0','#d4f5dd','#d6e8ff','#ead9ff'];
+const BN_SEG=typeof Intl!=='undefined'&&Intl.Segmenter?new Intl.Segmenter('bn',{granularity:'grapheme'}):null;
+const graphemes=s=>BN_SEG?[...BN_SEG.segment(s)].map(x=>x.segment):[...s];
+function stopType(){clearTimeout(twTimer);twTimer=null;if(twStop){twStop();twStop=null}}
+function typeCard(el,onDone){
+ stopType();
+ const cur=document.createElement('span');cur.className='cursor';cur.setAttribute('aria-hidden','true');
+ const steps=[];
+ const hide=n=>{if(n.nodeType===1&&n.tagName!=='TD'&&n.tagName!=='TH')n.classList.add('tw-h')};
+ const showAnc=n=>{for(let p=n.nodeType===3?n.parentElement:n;p&&p!==el;p=p.parentElement)p.classList.remove('tw-h')};
+ function walk(parent){
+  for(const n of [...parent.childNodes]){
+   if(n.nodeType===3){
+    const v=n.nodeValue;
+    if(!v||(!/\S/.test(v)&&v.includes('\n')))continue;
+    n.nodeValue='';
+    steps.push({k:'t',n,u:graphemes(v),f:v,i:0});
+   }else if(n.nodeType===1){
+    if(n.matches('.katex,.katex-display,img,svg,hr')){hide(n);steps.push({k:'a',el:n})}
+    else if(n.tagName==='BR'){hide(n);steps.push({k:'b',el:n})}
+    else{hide(n);walk(n)}
+   }
+  }
+ }
+ walk(el);
+ let last=null,done=false;
+ const placeEnd=()=>{
+  if(last){
+   if(last.k==='t')last.n.after(cur);else last.el.after(cur);
+   let p=cur.parentElement;
+   while(p&&p!==el&&/^(A|MARK|CODE|U|S|DEL|STRIKE|STRONG|B|EM|I|SPAN)$/.test(p.tagName)&&!p.classList.contains('katex')&&!p.classList.contains('katex-display')&&!cur.nextSibling){
+    p.after(cur);p=cur.parentElement;
+   }
+  }else el.append(cur);
+ };
+ const finish=()=>{
+  if(done)return;done=true;clearTimeout(twTimer);twTimer=null;twStop=null;
+  el.classList.remove('typing');el.onclick=null;
+  if(onDone)onDone();
+ };
+ const reveal=()=>{
+  if(done)return;
+  clearTimeout(twTimer);twTimer=null;
+  for(const s of steps){
+   if(s.k==='t')s.n.nodeValue=s.f;
+   else s.el.classList.remove('tw-h');
+   last=s;
+  }
+  el.querySelectorAll('.tw-h').forEach(x=>x.classList.remove('tw-h'));
+  placeEnd();finish();
+ };
+ twStop=()=>{clearTimeout(twTimer);twTimer=null;done=true;el.classList.remove('typing');el.onclick=null};
+ if(!steps.length||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){reveal();return}
+ el.classList.add('typing');
+ el.prepend(cur);
+ el.onclick=()=>{if(!done)reveal()};
+ let si=0;
+ function tick(){
+  if(done)return;
+  while(si<steps.length&&steps[si].k==='t'&&steps[si].i>=steps[si].u.length)si++;
+  if(si>=steps.length){placeEnd();finish();return}
+  const s=steps[si];last=s;
+  if(s.k==='b'){showAnc(s.el);s.el.after(cur);si++;twTimer=setTimeout(tick,30);return}
+  if(s.k==='a'){showAnc(s.el);s.el.after(cur);si++;twTimer=setTimeout(tick,90);return}
+  const ch=s.u[s.i++];
+  if(s.i===1)showAnc(s.n);
+  s.n.nodeValue+=ch;
+  s.n.after(cur);
+  if(s.i>=s.u.length)si++;
+  const ms=/^\s+$/.test(ch)?15:/^[.!?।…]$/.test(ch)?85:/^[,;:—–]$/.test(ch)?55:36;
+  twTimer=setTimeout(tick,ms);
+ }
+ tick();
+}
 async function loadCards(){
+ stopType();
  try{C=await (await fetch('/api/cards')).json()}catch(e){toast('Cards load failed')}
  $('#sv').hidden=true;$('#cg').hidden=false;cardsUI()}
 function cardsUI(){
@@ -459,11 +540,15 @@ function study(){
  if(!C.length)return toast('No cards yet');
  deck=[...C];di=0;$('#cg').hidden=true;$('#sv').hidden=false;deckUI()}
 function deckUI(){
+ stopType();
  const sv=$('#sv');
  if(di>=deck.length){sv.innerHTML=`<div class="card q">Round complete.<div class="acts"><button class="btn p" id="rs">Start again</button><button class="btn" id="cl">Close</button></div></div>`;$('#rs').onclick=study;$('#cl').onclick=loadCards;return}
  const c=deck[di];
- sv.innerHTML=`<div class="qh" style="margin-top:16px"><span>${di+1} / ${deck.length}</span></div><div class="note lg md" style="background:${c.color}">${md(c.body,0,1)}</div><div class="acts" style="justify-content:center"><button class="btn p" id="dn">Next</button><button class="btn" id="cl">Close</button></div>`;
- math(sv);$('#dn').onclick=()=>{di++;deckUI()};$('#cl').onclick=loadCards}
+ sv.innerHTML=`<div class="qh" style="margin-top:16px"><span>${di+1} / ${deck.length}</span><span class="mut" id="twhint">Tap card to show all</span></div><div class="note lg md" style="background:${c.color}">${md(c.body,0,1)}</div><div class="acts" style="justify-content:center"><button class="btn p" id="dn">Next</button><button class="btn" id="cl">Close</button></div>`;
+ const note=sv.querySelector('.note');
+ math(note);
+ typeCard(note,()=>{const h=$('#twhint');if(h)h.textContent=''});
+ $('#dn').onclick=()=>{stopType();di++;deckUI()};$('#cl').onclick=()=>{stopType();loadCards()}}
 $('#studyb').onclick=study;$('#addc').onclick=()=>openEd(null);
 
 /* editor */

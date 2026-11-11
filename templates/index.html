@@ -347,33 +347,29 @@ function dash(){
  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(root.hidden||reduce||(!a.t&&!files)){draw(1);return}
  draw(0);
- const boxAnim=(el,dur)=>new Promise(resolve=>{
-  const nums=[...el.querySelectorAll('.cnt-n')].map(e=>[e,+e.dataset.n]);
-  const rings=[...el.querySelectorAll('.rp')].map(e=>[e,e.parentElement.querySelector('.rt'),+e.dataset.c,+e.dataset.p]);
-  const arcs=[...el.querySelectorAll('.da')].map(e=>[e,+e.dataset.l,+e.dataset.o,+e.dataset.c]);
-  const bars=[...el.querySelectorAll('.track i')].map(e=>[e,+e.dataset.w]);
-  const t0=performance.now();
+ const boxes=[...root.querySelectorAll('.card')];
+ if(!boxes.length)return;
+ let bi=0;
+ const next=()=>{
+  if(dashStop||bi>=boxes.length){dashRaf=0;return}
+  const box=boxes[bi++];
+  const nums=[...box.querySelectorAll('.cnt-n')].map(e=>[e,+e.dataset.n]);
+  const rings=[...box.querySelectorAll('.rp')].map(e=>[e,e.parentElement.querySelector('.rt'),+e.dataset.c,+e.dataset.p]);
+  const arcs=[...box.querySelectorAll('.da')].map(e=>[e,+e.dataset.l,+e.dataset.o,+e.dataset.c]);
+  const bars=[...box.querySelectorAll('.track i')].map(e=>[e,+e.dataset.w]);
+  const t0=performance.now(),dur=800;
   const step=now=>{
-   if(dashStop){resolve();return}
+   if(dashStop){dashRaf=0;return}
    const t=Math.min(1,(now-t0)/dur),x=1-Math.pow(1-t,3);
    for(const[n,v]of nums)n.textContent=Math.round(v*x);
    for(const[e,tx,pv,cp]of rings){const vv=cp*x;e.setAttribute('stroke-dasharray',`${pv*vv/100} ${cp}`);if(tx)tx.textContent=Math.round(vv)+'%'}
    for(const[e,l,o,cc]of arcs){const v=l*x;e.setAttribute('stroke-dasharray',`${v} ${cc-v}`);e.setAttribute('stroke-dashoffset',`${-o*x}`)}
    for(const[e,w]of bars)e.style.width=(w*x).toFixed(2)+'%';
-   if(t<1)dashRaf=requestAnimationFrame(step);else resolve()
+   if(t<1)dashRaf=requestAnimationFrame(step);else next()
   };
   dashRaf=requestAnimationFrame(step)
- });
- const run=async()=>{
-  for(const box of [...root.querySelectorAll('.card')]){
-   if(dashStop)return;
-   await boxAnim(box,900);
-   if(dashStop)return;
-   await new Promise(resolve=>{dashRaf=setTimeout(resolve,180)})
-  }
-  dashRaf=0
  };
- run()}
+ next()}
 
 /* filters */
 const STF=[['new','Unattempted'],['all','All questions'],['incorrect','Incorrect'],['skipped','Skipped'],['correct','Correct']];

@@ -310,6 +310,7 @@ function ring(p,size=92){
 const sbk=q=>q.ph==='MT'?'MT':q.sb;
 
 let dashRaf=0;
+let dashStop=false;
 function dash(){
  dashStop=false;
  cancelAnimationFrame(dashRaf);
@@ -346,7 +347,6 @@ function dash(){
  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(root.hidden||reduce||(!a.t&&!files)){draw(1);return}
  draw(0);
- let dashStop=false;
  const boxAnim=(el,dur)=>new Promise(resolve=>{
   const nums=[...el.querySelectorAll('.cnt-n')].map(e=>[e,+e.dataset.n]);
   const rings=[...el.querySelectorAll('.rp')].map(e=>[e,e.parentElement.querySelector('.rt'),+e.dataset.c,+e.dataset.p]);

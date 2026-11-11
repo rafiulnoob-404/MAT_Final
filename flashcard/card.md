@@ -394,3 +394,25 @@ Ha-250; (প্লাসেন্টেশন বা অমরাবিন্য
 - **P →\rightarrow→** <mark>Poxviridae (পক্স ভাইরাস / বসন্তের ভাইরাস - Poxvirus)</mark>
 - **P →\rightarrow→** <mark>Parvoviridae (পারভোভাইরাস - Parvovirus)</mark>
 - **P →\rightarrow→** <mark>Papillomaviridae (প্যাপিলোমা ভাইরাস - Papillomavirus)</mark>
+
+### Card 53
+<!-- color: #d4f5dd -->
+
+**উদ্ভিদবিজ্ঞান ও প্রাণিবিজ্ঞান পুরো বইয়ের নাশপাতি আকৃতির গঠনসমূহ**
+
+> **মনে রাখার কৌশল:** উদ্ভিদবিজ্ঞান ও প্রাণিবিজ্ঞানে মোট **৯টি** জায়গায় 'নাশপাতি আকৃতি' (Pear-shaped)-র গঠন পাওয়া যায়।
+
+**উদ্ভিদবিজ্ঞান (১ম পত্র)**
+
+* **১. <mark>Ulothrix</mark>-এর জুস্পোর (<mark>Zoospore</mark>):** অযৌন জননে উৎপাদিত জুস্পোরগুলো **নাশপাতি আকৃতির** হয়ে থাকে।
+* **২. <mark>Ulothrix</mark>-এর গ্যামিট (<mark>Gamete</mark>):** অপত্য প্রোটোপ্লাস্ট (<mark>Protoplast</mark>) থেকে **নাশপাতি আকৃতির** গ্যামিট উৎপন্ন হয়।
+* **৩. ব্রায়োফাইটার (<mark>Bryophyte</mark>) অ্যান্থেরিডিয়াম (<mark>Antheridium</mark>):** এর আকৃতি **গোলাকার**, **নাশপাতির মতো**, **বেলনাকার** বা গদাকার হয়।
+* **৪. <mark>Riccia</mark>-র অ্যান্থেরিডিয়াম (<mark>Antheridium</mark>):** এর আকৃতি **নাশপাতির মতো** এবং আর্কিগোনিয়াম (<mark>Archegonium</mark>) ফ্লাস্কের (<mark>Flask</mark>) মতো হয়।
+
+**প্রাণিবিজ্ঞান (২য় পত্র)**
+
+* **৫. <mark>Hydra</mark>-র পেশি-আবরণী কোষ (<mark>Musculo-epithelial cell</mark>):** এই কোষগুলো **কোণাকার** বা **নাশপাতি আকৃতির** হয়ে থাকে।
+* **৬. <mark>Hydra</mark>-র নিডোসাইট (<mark>Nidocyte</mark>):** এগুলো **গোল**, **ডিম্বাকার**, **নাশপাতি আকার**, **পেয়ালাকার** বা লাটিম আকৃতির হয়।
+* **৭. ঘাসফড়িংয়ের (<mark>Grasshopper</mark>) মস্তক (<mark>Head</mark>):** ঘাসফড়িংয়ের মস্তক **নাশপাতি আকৃতির** এবং এটি হাইপোগন্যাথাস (<mark>Hypognathus</mark>) ধরনের।
+* **৮. প্রোস্টেট গ্রন্থি (<mark>Prostate gland</mark>):** এটি মূত্রথলির (<mark>Urinary bladder</mark>) নিচে অবস্থিত একটি **নাশপাতি আকৃতির** গ্রন্থি।
+* **৯. জরায়ু (<mark>Uterus</mark>):** এটি দেখতে **উল্টানো নাশপাতির মতো**, ফাঁপা (<mark>Hollow</mark>) ও মাংসল (<mark>Muscular</mark>) অঙ্গ।

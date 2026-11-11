@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Practice Hub</title>
+<title>MAT FINAL</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
@@ -91,6 +91,17 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border:0;border-radiu
 .ustat{padding:12px 14px;border-radius:16px;display:flex;flex-direction:column;gap:2px;min-width:0;background:var(--bg)}
 .ustat b{font-size:1.35rem;font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .tmp{display:inline-block;margin-left:8px;padding:2px 10px;border-radius:999px;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--amb);background:var(--bg);box-shadow:inset 2px 2px 5px var(--s1),inset -2px -2px 5px var(--s2);vertical-align:middle}
+.brand{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:2px}
+.brand #app-name{font-size:1.5rem;font-weight:800;line-height:1.1}
+.brand #app-tag{font-size:.82rem;color:var(--mut);line-height:1.4}
+.t-animate{overflow:hidden;display:inline-block;width:0;animation:typewrite 1.2s steps(24,end) forwards}
+.t-animate#app-tag{animation-delay:1.35s;opacity:0;animation:fadein 1s steps(1,end) 1.35s forwards}
+@keyframes typewrite{to{width:100%}}
+@keyframes fadein{to{opacity:1}}
+#sync-banner{position:fixed;top:0;left:0;right:0;background:var(--ac);color:#fff;padding:10px 18px;display:none;justify-content:space-between;align-items:center;gap:12px;z-index:70;font-size:.88rem;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+#sync-banner span{opacity:.96}
+#sync-banner button{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.45)}
+#ai-instr{width:100%;border:0;border-radius:14px;padding:10px 14px;font:inherit;background:var(--bg);color:var(--tx);box-shadow:inset 3px 3px 7px var(--s1),inset -3px -3px 7px var(--s2);resize:vertical}
 /* flashcards: image-card layout (no download button) */
 .notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:22px;margin-top:16px}
 .note{position:relative;overflow:hidden;color:#1b2440;border-radius:32px;padding:26px 24px 18px;box-shadow:0 14px 28px rgba(0,0,0,.14);min-width:0;display:flex;flex-direction:column;gap:14px}
@@ -132,7 +143,11 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
 @media(min-width:821px){nav{max-width:620px;margin:0 auto 22px}.shell{padding-bottom:40px}#toast{bottom:24px}}
 </style></head><body>
 <div class="shell">
-<header><h1>Practice Hub</h1><span class="mut" id="meta"></span></header>
+<div id="sync-banner"><span id="sync-banner-msg">অসিঙ্কড পরিবর্তন আছে — <b>সিঙ্ক এখন করুন</b> · ৩০ সেকেন্ডে অটো সিঙ্ক হবে</span><button id="sync-now-btn">সিঙ্ক এখন করুন</button></div>
+<header>
+  <div class="brand"><span class="t-animate" id="app-name">MAT FINAL</span><span class="t-animate" id="app-tag">a web for practicing mat questions   ///   UNMESH, RETINA mcqs   ///   10k+ solved</span></div>
+  <span class="mut" id="meta"></span>
+</header>
 <nav id="nav">
  <button data-t="dash" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>Dashboard</button>
  <button data-t="questions"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg>Questions</button>
@@ -144,11 +159,14 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
 <section id="t-dash"><div id="ov"></div><h3 class="sec">Subjects</h3><div class="tiles" id="sb"></div></section>
 
 <section id="t-questions" hidden>
+ <div class="tools" style="gap:10px;align-items:center"><button class="btn" id="filter-toggle">Filters ▾</button><span class="mut" id="filter-sum">ফিল্টার খোলা আছে — লুকানোর জন্য ট্যাপ করুন</span></div>
+ <div id="filter-wrap">
  <div class="frow"><span class="mut">Coaching</span><div class="chips" id="f-co"></div></div>
  <div class="frow"><span class="mut">Mode</span><div class="chips" id="f-mo"></div></div>
  <div class="frow"><span class="mut">Phase</span><div class="chips" id="f-ph"></div></div>
  <div class="frow" id="f-sbw"><span class="mut">Subject</span><div class="chips" id="chips"></div></div>
  <div class="frow"><span class="mut">Status</span><div class="chips" id="stc"></div></div>
+ </div>
  <div class="tools"><button class="btn p" id="go">Shuffle &amp; start</button><span class="mut" id="cnt"></span></div>
  <div id="card"></div>
 </section>
@@ -203,8 +221,6 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
   <label>AI settings</label>
   <p class="mut" id="gm">…</p>
   <div class="acts"><button class="btn" id="ureset">Reset counters</button></div></div>
- <div class="card"><h3>GitHub sync</h3><p class="mut" id="gs">…</p>
-  <div class="acts"><button class="btn p" id="sync">Sync now</button><button class="btn" id="rel">Reload files</button></div></div>
 </section>
 </main></div>
 
@@ -216,6 +232,8 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
   <button data-c="mark"><mark>Highlight</mark></button><button data-c="table">Table</button><button data-c="ai">✨ AI format</button><button data-c="clear">Clear</button>
  </div>
  <div id="edit" contenteditable="true"></div>
+ <label class="mut" style="margin-top:10px">AI ফরম্যাট নির্দেশনা (ঈच्छাকritto)</label>
+ <textarea id="ai-instr" rows="2" placeholder="যেমন: সংক্ষিপ্ত করে বুলেটে লিখুন, শুধু গুরুত্বপূর্ণ পয়েন্ট রাখুন"></textarea>
  <div class="csw" id="csw"></div>
  <div class="acts"><button class="btn p" id="esave">Save</button><button class="btn" id="ecancel">Cancel</button></div>
 </div></div>
@@ -249,6 +267,12 @@ let queue=[],cur=0,curQ=null,answered=false,sess={c:0,i:0,s:0},timer=null,tok=0;
 const QC=new Map(),key=r=>r.f+'#'+r.n,ST={c:'correct',i:'incorrect',s:'skipped','':''};
 const toast=(m,ok)=>{const t=$('#toast');t.textContent=m;t.style.color=ok?'var(--ok)':'var(--bad)';t.style.display='block';setTimeout(()=>t.style.display='none',ok?2000:5000)};
 const post=async(u,b,method='POST',h)=>{const r=await fetch(u,{method,headers:{'Content-Type':'application/json',...(h||{})},body:JSON.stringify(b||{})});let j={};try{j=await r.json()}catch(e){}if(!r.ok)throw j.error||('HTTP '+r.status);return j};
+let syncPending=false,syncTimer=null;
+function syncBanner(show){const b=$('#sync-banner');if(!b)return;b.style.display=show?'flex':'none';if(!show)clearSyncTimer();}
+function clearSyncTimer(){clearTimeout(syncTimer);syncTimer=null;}
+function startSyncTimer(){clearSyncTimer();syncTimer=setTimeout(doSync,30000);}
+async function doSync(){clearSyncTimer();try{const r=await post('/api/sync');syncPending=false;syncBanner(false);toast((r.pending?r.pending+' ফাইল পেন্ডিং':'সিঙ্ক করা হয়েছে'),1)}catch(e){toast('সিঙ্ক ব্যর্থ: '+e);syncBanner(true);startSyncTimer();}}
+function markDirty(){syncPending=true;syncBanner(true);startSyncTimer();}
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const sc=s=>s==='correct'?'up':s==='incorrect'?'dn':s==='skipped'?'sk':'';
 const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -267,14 +291,14 @@ const math=el=>{try{renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',di
 function tab(t){
  if(t!=='questions'&&timer){cancelT();cur++;show()}
  if(t!=='cards')stopType();
- if(t!=='dash')cancelAnimationFrame(dashRaf);
+ if(t!=='dash'){dashStop=true;cancelAnimationFrame(dashRaf);}
  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!=='t-'+t);
  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
  localStorage.tab=t;scrollTo(0,0);
  if(t==='dash')dash();
  if(t==='files')filesUI();
  if(t==='cards')loadCards();
- if(t==='settings'){gh();aiPanel()}}
+ if(t==='settings')aiPanel();}
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 
 /* stats / dashboard */
@@ -287,6 +311,7 @@ const sbk=q=>q.ph==='MT'?'MT':q.sb;
 
 let dashRaf=0;
 function dash(){
+ dashStop=false;
  cancelAnimationFrame(dashRaf);
  const a=stats(IDX),files=FILES.length,acc=pc(a.c,a.c+a.i),att=pc(a.a,a.t);
  const R=48,C=2*Math.PI*R;let off=0;
@@ -321,13 +346,34 @@ function dash(){
  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(root.hidden||reduce||(!a.t&&!files)){draw(1);return}
  draw(0);
- const t0=performance.now(),dur=1350;
- const step=now=>{
-  const t=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-t,3);
-  draw(e);
-  if(t<1)dashRaf=requestAnimationFrame(step);else dashRaf=0
+ let dashStop=false;
+ const boxAnim=(el,dur)=>new Promise(resolve=>{
+  const nums=[...el.querySelectorAll('.cnt-n')].map(e=>[e,+e.dataset.n]);
+  const rings=[...el.querySelectorAll('.rp')].map(e=>[e,e.parentElement.querySelector('.rt'),+e.dataset.c,+e.dataset.p]);
+  const arcs=[...el.querySelectorAll('.da')].map(e=>[e,+e.dataset.l,+e.dataset.o,+e.dataset.c]);
+  const bars=[...el.querySelectorAll('.track i')].map(e=>[e,+e.dataset.w]);
+  const t0=performance.now();
+  const step=now=>{
+   if(dashStop){resolve();return}
+   const t=Math.min(1,(now-t0)/dur),x=1-Math.pow(1-t,3);
+   for(const[n,v]of nums)n.textContent=Math.round(v*x);
+   for(const[e,tx,pv,cp]of rings){const vv=cp*x;e.setAttribute('stroke-dasharray',`${pv*vv/100} ${cp}`);if(tx)tx.textContent=Math.round(vv)+'%'}
+   for(const[e,l,o,cc]of arcs){const v=l*x;e.setAttribute('stroke-dasharray',`${v} ${cc-v}`);e.setAttribute('stroke-dashoffset',`${-o*x}`)}
+   for(const[e,w]of bars)e.style.width=(w*x).toFixed(2)+'%';
+   if(t<1)dashRaf=requestAnimationFrame(step);else resolve()
+  };
+  dashRaf=requestAnimationFrame(step)
+ });
+ const run=async()=>{
+  for(const box of [...root.querySelectorAll('.card')]){
+   if(dashStop)return;
+   await boxAnim(box,900);
+   if(dashStop)return;
+   await new Promise(resolve=>{dashRaf=setTimeout(resolve,180)})
+  }
+  dashRaf=0
  };
- dashRaf=requestAnimationFrame(step)}
+ run()}
 
 /* filters */
 const STF=[['new','Unattempted'],['all','All questions'],['incorrect','Incorrect'],['skipped','Skipped'],['correct','Correct']];
@@ -342,6 +388,7 @@ function fUI(){
  $('#chips').innerHTML=Object.entries(SUBJ).map(([k,v])=>`<button class="chip${F.sb.has(k)?' on':''}" data-k="${k}">${v}</button>`).join('');
  $('#chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{F.sb.has(b.dataset.k)?F.sb.delete(b.dataset.k):F.sb.add(b.dataset.k);fUI();build()})}
 function stc(){seg('#stc',STF,sv,k=>{sv=k;stc();build()})}
+$('#filter-toggle').onclick=()=>{const w=$('#filter-wrap');w.hidden=!w.hidden;$('#filter-toggle').textContent=w.hidden?'Filters ▸':'Filters ▾';$('#filter-sum').textContent=w.hidden?'ফিল্টার লুকানো আছে':'ফিল্টার খোলা আছে — লুকানোর জন্য ট্যাপ করুন'};
 const okq=q=>(F.co==='all'||q.co===F.co)&&(F.mo==='all'||q.mo===F.mo)&&(F.ph==='all'||q.ph===F.ph)&&(!F.sb.size||(q.ph!=='MT'&&F.sb.has(q.sb)))&&(sv==='all'||(sv==='new'?!q.st:q.st===sv));
 function build(){queue=shuf(IDX.filter(okq));cur=0;sess={c:0,i:0,s:0};show()}
 
@@ -466,7 +513,7 @@ function cardMd(q,m){
 async function addCard(q,m){
  const body=cardMd(q,m);
  if(!body){toast(m==='mcq'?'No answer to add':m==='exp'?'No explanation to add':'Nothing to add');return}
- try{await post('/api/cards',{body,color:'#fff3a3'});toast('Added to cards',1)}
+ try{await post('/api/cards',{body,color:CC[C.length%CC.length]});toast('Added to cards',1);markDirty()}
  catch(e){toast('Card save failed: '+e)}}
 
 /* flashcards (never shuffled) */
@@ -551,17 +598,18 @@ async function loadCards(){
  $('#sv').hidden=true;$('#cg').hidden=false;cardsUI()}
 function cardsUI(){
  $('#ccnt').textContent=C.length+' cards';
- $('#cg').innerHTML=C.length?C.map(c=>`<div class="note" data-id="${c.id}" style="background:${c.color}"><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="f">AI format</button><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`).join(''):'<div class="mut">No cards yet. Tap "Add card".</div>';
+ const newest=[...C].sort((a,b)=>b.id-a.id);
+ $('#cg').innerHTML=newest.length?newest.map(c=>`<div class="note" data-id="${c.id}" style="background:${c.color}"><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="f">AI format</button><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`).join(''):'<div class="mut">No cards yet. Tap "Add card".</div>';
  math($('#cg'));
  $('#cg').querySelectorAll('.note button').forEach(b=>b.onclick=async()=>{
   const id=+b.closest('.note').dataset.id,c=C.find(x=>x.id===id),a=b.dataset.a;
   if(a==='e')openEd(c);
   else if(a==='f'){
    b.disabled=true;b.textContent='…';
-   try{const r=await post('/api/ai/format-card',{body:c.body});
-    await post('/api/cards/'+id,{body:r.body,color:c.color},'PUT');toast('Formatted',1);loadCards()}
+   try{const r=await post('/api/ai/format-card',{body:c.body,instructions:$('#ai-instr').value.trim()});
+    await post('/api/cards/'+id,{body:r.body,color:c.color},'PUT');toast('Formatted',1);loadCards();markDirty()}
    catch(e){toast('AI failed: '+e);b.disabled=false;b.textContent='AI format'}}
-  else if(confirm('Delete this card?')){try{await post('/api/cards/'+id,{},'DELETE');loadCards()}catch(e){toast('Delete failed: '+e)}}})}
+  else if(confirm('Delete this card?')){try{await post('/api/cards/'+id,{},'DELETE');loadCards();markDirty()}catch(e){toast('Delete failed: '+e)}}})}
 function study(){
  if(!C.length)return toast('No cards yet');
  deck=[...C];di=0;$('#cg').hidden=true;$('#sv').hidden=false;deckUI()}
@@ -581,7 +629,7 @@ $('#studyb').onclick=study;$('#addc').onclick=()=>openEd(null);
 function swUI(){$('#csw').innerHTML=CC.map(c=>`<button data-c="${c}" style="background:${c}" class="${c===edColor?'on':''}"></button>`).join('');
  $('#csw').querySelectorAll('button').forEach(b=>b.onclick=()=>{edColor=b.dataset.c;swUI()})}
 function openEd(c){
- edId=c?c.id:null;edColor=c?c.color:'#fff3a3';
+ edId=c?c.id:null;edColor=c?c.color:CC[C.length%CC.length];
  $('#edt').textContent=c?'Edit card':'New card';
  $('#edit').innerHTML=c?md(c.body,0,1):'';
  swUI();$('#ed').hidden=false;$('#edit').focus();document.execCommand('styleWithCSS',false,false)}
@@ -592,7 +640,7 @@ $('#tbar').onclick=async e=>{
  if(c==='ai'){
   const body=h2m($('#edit'));if(!body)return toast('Card is empty');
   b.disabled=true;b.textContent='Formatting…';
-  try{const r=await post('/api/ai/format-card',{body});$('#edit').innerHTML=md(r.body,0,1);math($('#edit'))}
+  try{const r=await post('/api/ai/format-card',{body,instructions:$('#ai-instr').value.trim()});$('#edit').innerHTML=md(r.body,0,1);math($('#edit'))}
   catch(e){toast('AI failed: '+e)}
   b.disabled=false;b.textContent='✨ AI format';return}
  if(c==='h')document.execCommand('formatBlock',false,document.queryCommandValue('formatBlock').toLowerCase()==='h3'?'div':'h3');
@@ -621,7 +669,7 @@ $('#esave').onclick=async()=>{
  const body=h2m($('#edit'));
  if(!body)return toast('Card is empty');
  try{edId?await post('/api/cards/'+edId,{body,color:edColor},'PUT'):await post('/api/cards',{body,color:edColor});
-  $('#ed').hidden=true;if(!$('#t-cards').hidden)loadCards();else toast('Card saved',1)}
+  $('#ed').hidden=true;if(!$('#t-cards').hidden)loadCards();else toast('Card saved',1);markDirty()}
  catch(e){toast('Save failed: '+e)}};
 
 /* HTML (editor) -> Markdown */
@@ -684,7 +732,7 @@ $('#pdf-form').onsubmit=async e=>{
   const title=document.createElement('strong');title.className='up';title.textContent=`Saved ${d.filename} · ${d.questions} questions`;result.append(title);
   const info=document.createElement('p');info.className='mut';info.textContent=`${d.kind.toUpperCase()} detected · Saved to ${d.location}`;result.append(info);
   if(d.warnings.length){const details=document.createElement('details'),summary=document.createElement('summary'),ul=document.createElement('ul');summary.textContent=`${d.warnings.length} conversion warning(s) — review`;details.append(summary);d.warnings.forEach(w=>{const li=document.createElement('li');li.textContent=w;ul.append(li)});details.append(ul);result.append(details)}
-  form.reset();updatePdfName();try{await loadIndex()}catch(_){const note=document.createElement('p');note.className='mut';note.textContent='Saved, but the file list could not be refreshed. Reload the page to see it.';result.append(note)}
+  form.reset();updatePdfName();markDirty();try{await loadIndex()}catch(_){const note=document.createElement('p');note.className='mut';note.textContent='Saved, but the file list could not be refreshed. Reload the page to see it.';result.append(note)}
  }catch(err){const msg=document.createElement('p');msg.className='dn';msg.textContent=err.message||String(err);result.append(msg)}
  finally{result.hidden=false;btn.disabled=false;btn.textContent='Convert & save'}
 };
@@ -736,12 +784,6 @@ async function aiPanel(){
  }catch(e){$('#um').textContent='Usage unavailable: '+e}
 }
 $('#ureset').onclick=async()=>{try{await post('/api/ai/usage/reset');await aiPanel();toast('Counters reset',1)}catch(e){toast('Reset failed: '+e)}};
-function gh(){fetch('/api/health').then(r=>r.json()).then(h=>{
- $('#gs').textContent=(h.github?`Commits are batched every ${Math.max(1,Math.round(h.sync_secs/60))} min. Pending files: ${h.pending}`:'GitHub storage is off (using local files).')+(h.ignored_files?` Ignored ${h.ignored_files} file(s) with old names (e.g. ${h.ignored_sample.join(', ')}).`:'');
- $('#sync').hidden=!h.github})}
-$('#sync').onclick=async()=>{try{const r=await post('/api/sync');toast(r.pending?`${r.pending} file(s) still pending`:'Synced',!r.pending);gh()}catch(e){toast('Sync failed: '+e)}};
-$('#rel').onclick=async()=>{try{await post('/api/reload');await loadIndex();toast('Reloaded',1);gh()}catch(e){toast('Reload failed: '+e)}};
-
 async function loadIndex(){
  const d=await (await fetch('/api/index')).json();
  if(!Array.isArray(d))throw d.error||'bad index';

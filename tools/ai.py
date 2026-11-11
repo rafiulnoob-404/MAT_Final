@@ -272,7 +272,9 @@ def create_blueprint(questions, lock):
 
     @bp.post("/api/ai/format-card")
     def ai_format_card():
-        body = (body_json().get("body") or "").strip()
+        data = body_json()
+        body = (data.get("body") or "").strip()
+        instructions = (data.get("instructions") or "").strip()
         if not body:
             return jsonify(error="empty card"), 400
         if len(body) > 8000:
@@ -280,7 +282,9 @@ def create_blueprint(questions, lock):
         key = (request.headers.get("X-Gemini-Key") or os.environ.get("GEMINI_API_KEY", "")).strip()
         model = (request.headers.get("X-Gemini-Model") or settings.GEM_MODEL).strip()
         prompt = ("Reformat and refine the provided flashcard text into clean, highly structured, and scannable Markdown.\n\n"
-                  "Strict Execution Rules:\n"
+                  + (f"User instructions (must be followed while keeping the strict output rules above):\n{instructions}\n\n"
+                     if instructions else "")
+                  + "Strict Execution Rules:\n"
                   "1. **Language — Bangla Only:** Write the entire flashcard in proper Bangla (Bengali script) only. "
                   "Never write Banglish (Bangla typed with Latin letters) and never write full sentences in English — "
                   "when the supplied text is in English or mixed, translate the content and rewrite it in Bangla. "

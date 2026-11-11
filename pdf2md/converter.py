@@ -30,6 +30,8 @@ except ImportError:  # e.g. Termux: use pure-python pdfminer.six instead
     pymupdf = None
 from bijoy2unicode import converter
 
+from pdf2md.mathglyph import repair as repair_text, repair_markdown
+
 # ---------------------------------------------------------------- Bijoy -> Unicode
 converter.conversionMap["ÿ"] = "ক্ষ"  # missing in the library
 converter.conversionMap["ø"] = "্ল"    # library maps to স্ন (wrong for SutonnyMJ)
@@ -66,6 +68,7 @@ def bijoy_to_unicode(text: str) -> str:
     out = out.replace("ে" + "া", "ো").replace("ে" + "ৗ", "ৌ")
     out = out.replace("\u200c", "").replace("\u00ad", "")
     out = re.sub(r"[ \t]+", " ", out).strip()
+    out = repair_text(out)          # math glyphs decoded as MacRoman look-alikes
     return (" " if text[:1].isspace() else "") + out + (" " if text[-1:].isspace() else "")
 
 
@@ -571,7 +574,7 @@ def to_markdown(qs, keep_status=False, doc=None, img_dir=None, tag="Q"):
             + (q["status"] if keep_status else "")
             + "\n"
         )
-    return "\n".join(blocks), warn
+    return repair_markdown("\n".join(blocks)), warn
 
 
 def convert(pdf_path, keep_status=False, backend="auto", img_dir=None, kind=None):

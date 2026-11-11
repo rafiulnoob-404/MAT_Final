@@ -76,6 +76,20 @@ class PromptTests(unittest.TestCase):
         self.assertNotIn("inline code (`key term`)", instructions)
         self.assertEqual(response.get_json()['body'], '**Fact**')
 
+    def test_flashcard_prompt_forces_bangla_with_english_terms(self):
+        app = Flask(__name__)
+        app.register_blueprint(create_blueprint(FakeQuestions(), threading.RLock()))
+        with patch('tools.ai.gemini', return_value="**তথ্য**") as gemini:
+            app.test_client().post('/api/ai/format-card', json={"body": "Mitochondria power the cell."})
+        instructions = gemini.call_args.args[0].split("Flashcard Text:\n", 1)[0]
+        self.assertIn("Bangla Only", instructions)
+        self.assertIn("Bengali script", instructions)
+        self.assertIn("translate the content and rewrite it in Bangla", instructions)
+        self.assertIn("Scientific-term exception", instructions)
+        self.assertIn("মসৃণ পেশি (Smooth muscle)", instructions)
+        self.assertNotIn("same language as the text", instructions)
+        self.assertNotIn("pure English or proper Bangla", instructions)
+
     def test_does_not_save_nonexistent_or_existing_option(self):
         question, _ = self.run_explain("", "ANSWER: D\n\n- Missing option.", ["3", "4"])
         self.assertEqual(question['ans'], '')

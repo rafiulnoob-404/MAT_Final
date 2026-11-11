@@ -416,3 +416,8 @@ Ha-250; (প্লাসেন্টেশন বা অমরাবিন্য
 * **৭. ঘাসফড়িংয়ের (<mark>Grasshopper</mark>) মস্তক (<mark>Head</mark>):** ঘাসফড়িংয়ের মস্তক **নাশপাতি আকৃতির** এবং এটি হাইপোগন্যাথাস (<mark>Hypognathus</mark>) ধরনের।
 * **৮. প্রোস্টেট গ্রন্থি (<mark>Prostate gland</mark>):** এটি মূত্রথলির (<mark>Urinary bladder</mark>) নিচে অবস্থিত একটি **নাশপাতি আকৃতির** গ্রন্থি।
 * **৯. জরায়ু (<mark>Uterus</mark>):** এটি দেখতে **উল্টানো নাশপাতির মতো**, ফাঁপা (<mark>Hollow</mark>) ও মাংসল (<mark>Muscular</mark>) অঙ্গ।
+
+### Card 54
+<!-- color: #d6e8ff -->
+
+vcasdsdw

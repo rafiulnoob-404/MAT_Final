@@ -379,3 +379,18 @@ Ha-250; (প্লাসেন্টেশন বা অমরাবিন্য
 | অ্যাওর্টিক কপাটিকা | বাম নিলয় ও মহাধমনি |
 | থিবেসিয়ান কপাটিকা | করোনারি সাইনাস ও ডান অলিন্দ |
 | ইউস্টেশিয়ান কপাটিকা | ইনফিরিয়র ভ্যানাক্যাভা ও ডান অলিন্দ |
+
+### Card 52
+<!-- color: #ffd6e0 -->
+
+### ডিএনএ ভাইরাস (DNA Virus) মনে রাখার সহজ উপায়
+
+> **মনে রাখার নিমোনিক (Mnemonic):**
+> জনপ্রিয় ইংরেজি নিমোনিক: <mark>"HHAPPPy"</mark> (হ্যাপি)
+
+- **H →\rightarrow→** <mark>Herpesviridae (হার্পিস ভাইরাস)</mark>
+- **H →\rightarrow→** <mark>Hepadnaviridae (হেপাটাইটিস বি ভাইরাস - Hepatitis B virus)</mark>
+- **A →\rightarrow→** <mark>Adenoviridae (অ্যাডেনোভাইরাস - Adenovirus)</mark>
+- **P →\rightarrow→** <mark>Poxviridae (পক্স ভাইরাস / বসন্তের ভাইরাস - Poxvirus)</mark>
+- **P →\rightarrow→** <mark>Parvoviridae (পারভোভাইরাস - Parvovirus)</mark>
+- **P →\rightarrow→** <mark>Papillomaviridae (প্যাপিলোমা ভাইরাস - Papillomavirus)</mark>

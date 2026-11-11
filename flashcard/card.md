@@ -79,7 +79,7 @@ Ha-181; (ম্যালেরিয়া পরজীবীর জীবনচ
 ### Card 14
 <!-- color: #fff3a3 -->
 
-* **Name of the muscular projections** on the inner wall of the ventricles of the heart: **Papillary muscles** (`প্যাপিলারি পেশি`)
+**হৃৎপিণ্ডের নিলয়ের (Ventricles)** প্রাচীরের অভ্যন্তরীণ গহ্বরের পেশিবহুল অভিক্ষেপগুলোর নাম: <mark>প্যাপিলারি পেশি (Papillary muscle)</mark>
 
 ### Card 15
 <!-- color: #fff3a3 -->
@@ -89,8 +89,8 @@ Ha-181; (ম্যালেরিয়া পরজীবীর জীবনচ
 ### Card 16
 <!-- color: #ead9ff -->
 
-- **Maternal antibody**: <mark>IgG</mark> (passes through the placenta to the fetus)
-- **Secretory antibody**: <mark>IgA</mark> (found in mucosal areas, saliva, tears, and breast milk)
+**মাতৃ antibody**: <mark>IgG (IgG)</mark> (<mark>প্ল্যাসেন্টা (Placenta)</mark> বা অমরা ভেদ করে ভ্রূণে প্রবেশ করে)
+**ক্ষরণকারী/Secretory antibody**: <mark>IgA (IgA)</mark> (<mark>মিউকোজাল অঞ্চল (Mucosal areas)</mark>, লালা, অশ্রু এবং মাতৃদুগ্ধে পাওয়া যায়)
 
 ### Card 17
 <!-- color: #fff3a3 -->
@@ -100,9 +100,11 @@ Ha-181; (ম্যালেরিয়া পরজীবীর জীবনচ
 ### Card 21
 <!-- color: #ffd6e0 -->
 
-1. **Peri-visceral Sinus** → Contains the **alimentary system**, **reproductive system**, and **excretory system**.
-2. **Perineural / Sternal Sinus** → Contains the **nerve cord**.
-3. **Dorsal / Pericardial Sinus** → Contains the **heart**.
+### ঘাসফরিংয়ের হিমোসিলের প্রকোষ্ঠসমূহ (Sinuses of Cockroach Hemocoel)
+
+* **পেরিভিসারাল সাইনাস (Peri-visceral sinus):** এতে <mark>পৌষ্টিকতন্ত্র (Alimentary system)</mark>, <mark>প্রজননতন্ত্র (Reproductive system)</mark> এবং <mark>রেচনতন্ত্র (Excretory system)</mark> অবস্থান করে।
+* **পেরিনিউরাল বা স্টার্নাল সাইনাস (Perineural / Sternal sinus):** এর মধ্যে <mark>স্নায়ুরজ্জু (Nerve cord)</mark> অবস্থান করে।
+* **ডর্সাল বা পেরিকার্ডিয়াল সাইনাস (Dorsal / Pericardial sinus):** এর ভেতর <mark>হৃদপিণ্ড (Heart)</mark> অবস্থান করে।
 
 ### Card 22
 <!-- color: #fff3a3 -->
@@ -282,3 +284,66 @@ Ha-250; (প্লাসেন্টেশন বা অমরাবিন্য
 - **পরিচয়:** অটোকয়েডগুলোকে সাধারণত **"লোকাল হরমোন"** বা স্থানীয় হরমোন বলা হয়।
 - **কার্যপদ্ধতি:** এগুলো শরীরের কোনো নির্দিষ্ট অঞ্চলের বিভিন্ন বৈচিত্র্যময় কোষ থেকে উৎপন্ন হয় এবং রক্তের মাধ্যমে দূরবর্তী স্থানে না গিয়ে **উৎপত্তিস্থলের আশেপাশের কোষ বা কলার ওপর** কাজ করে।
 - **উদাহরণ:** গ্যাস্ট্রোইনটেস্টাইনাল ট্র্যাক্টের হরমোনসমূহ (যেমন—<mark>সিক্রেটিন, গ্যাস্ট্রিন, কোলেসিস্টোকাইনিন</mark> ইত্যাদি) লোকাল হরমোন বা অটোকয়েড হরমোনের উদাহরণ।
+
+### Card 44
+<!-- color: #ead9ff -->
+
+### <mark>রেনাল পোর্টাল সিস্টেম (Renal portal system)</mark>
+
+- **সরীসৃপ (<mark>Reptiles</mark>):** সুগঠিত এবং কার্যক্ষম <mark>রেনাল পোর্টাল সিস্টেম (Renal portal system)</mark> বিদ্যমান।
+- **পাখি (<mark>Birds</mark>):** অবক্ষয়প্রাপ্ত বা হ্রাসপ্রাপ্ত <mark>রেনাল পোর্টাল সিস্টেম (Renal portal system)</mark> থাকে।
+- **স্তন্যপায়ী (<mark>Mammals</mark>):** সম্পূর্ণ অনুপস্থিত।
+
+### Card 45
+<!-- color: #ffd6e0 -->
+
+### নিডোসাইট কোষ ও নেমাটোসিস্ট (<mark>Nidocyte and Nematocyst</mark>)
+
+> <mark>নিডোসাইট (Nidocyte)</mark> কোষের মুক্ত প্রান্তের শক্ত, দৃঢ় ও সংবেদনশীল কাঁটাটি হলো <mark>নিডোসিল (Nidocil)</mark>। এটি ট্রিগারের মতো কাজ করে, ফলে প্যাঁচানো <mark>সূত্রক (Thread)</mark> বাইরে বেরিয়ে আসে।
+
+- **অপারকুলাম (<mark>Operculum</mark>):** স্বাভাবিক অবস্থায় এটি ঢাকনার মতো কাজ করে।
+- **নেমাটোসিস্ট (<mark>Nematocyst</mark>):** এটি <mark>হিপনোটক্সিন (Hypnotoxin)</mark> নামক বিষাক্ত তরলে পূর্ণ থাকে।
+- **পেশিসূত্র (<mark>Muscular fiber</mark>):** কোষের <mark>সাইটোপ্লাজম (Cytoplasm)</mark> ও <mark>নেমাটোসিস্টের প্রাচীরে (Nematocyst wall)</mark> সংকোচনশীল কিছু পেশিতন্তু থাকে।
+
+#### হাইড্রায় প্রাপ্ত ৪ ধরনের নেমাটোসিস্ট (<mark>Hydra</mark>): নেমাটোসিস্টের প্রকারভেদ
+
+| নেমাটোসিস্টের প্রকার (<mark>Nematocyst Type</mark>) | প্রধান বৈশিষ্ট্য (<mark>Main Feature</mark>) | কাজ ও অন্যান্য তথ্য (<mark>Function & Info</mark>) |
+| --- | --- | --- |
+| **স্টিনোটিল (<mark>Stenotele</mark>) / পেনিট্র্যান্ট (<mark>Penetrant</mark>)** | **বৃহত্তম** (<mark>Largest</mark>) ও জটিল ধরনের আদর্শ <mark>নেমাটোসিস্ট (Nematocyst)</mark> | বিষাক্ত <mark>হিপনোটক্সিন (Hypnotoxin = প্রোটিন + ফেনল)</mark> ধারণ করে। |
+| **ভলভেন্ট (<mark>Volvent</mark>) / ডেসমৌনিম (<mark>Desmoneme</mark>)** | ছোট, নাশপাতি আকৃতির ও তুলনামূলক কম দীর্ঘ <mark>সূত্রক (Thread)</mark> | শিকারকে **পেঁচিয়ে ধরতে** সাহায্য করে। |
+| **স্ট্রেপটোলিন গ্লুটিন্যান্ট (<mark>Streptoline glutinant</mark>) / হলোট্রিকাস আইসোরাইজা (<mark>Holotrichous isorhiza</mark>)** | সর্পিলাকারে বিন্যস্ত <mark>কাঁটাযুক্ত (Spiny)</mark> <mark>সূত্রক (Thread)</mark> | আঠা নিঃসরণ ও শিকার আটকে রাখতে সাহায্য করে। |
+| **স্টেরিওল্লিশ গুটিন্যান্ট (<mark>Stereoline glutinant</mark>) / অ্যাট্রিকাস আইসোরাইজা (<mark>Atrichous isorhiza</mark>)** | **কাঁটাবিহীন (Spineless)** ও **ক্ষুদ্রতম** (<mark>Smallest</mark>) <mark>নেমাটোসিস্ট (Nematocyst)</mark> | আঠালো পদার্থ নিঃসরণ করে। |
+
+### Card 46
+<!-- color: #d4f5dd -->
+
+# সিলেন্টেরন (Coelenteron) ও পরিপাক (Digestion)
+
+> **মূল বৈশিষ্ট্য:** সিলেন্টেরন (<mark>Coelenteron</mark>) বা পরিপাক-সংবহন গহ্বর (<mark>Gastrovascular cavity</mark>), যা <mark>Blind gut</mark> বা <mark>Blind sac</mark> নামেও পরিচিত।
+
+- **প্রাথমিক প্রক্রিয়া:** এই গহ্বরের মধ্যে খাদ্যবস্তু <mark>ফ্লাজেলীয় কোষ (Flagellated cell)</mark>-এর ক্রিয়ায় ক্ষুদ্র কণায় পরিণত হয়।
+- **পরিপাক পদ্ধতি:** ক্ষুদ্র কণায় পরিণত হওয়ার পর খাদ্যবস্তুর <mark>বহিঃকোষীয় পরিপাক (Extracellular digestion)</mark> ঘটে।
+
+### Card 47
+<!-- color: #d6e8ff -->
+
+### পৌষ্টিকনালি (Alimentary canal)
+
+| অংশ | অন্তর্ভুক্ত অঙ্গসমূহ |
+| --- | --- |
+| **স্টোমোডিয়াম বা অগ্র-পৌষ্টিকনালি** | **মুখচিদ্র** , **গলবিল** , **গ্রাসনালি** , **ক্রপ** ও **গিজার্ড বা প্রোভেন্ট্রিকুলাস** |
+| **মেসেন্টেরন বা মধ্য-পৌষ্টিকনালি** | **পাকস্থলী** |
+| **প্রোক্টোডিয়াম বা পশ্চৎ-পৌষ্টিকনালি** | **ইলিয়াম**, **কোলন**, **রেকটাম বা মলাশয়** ও **পায়ুচিদ্র** |
+
+### Card 48
+<!-- color: #d6e8ff -->
+
+### ওমাটিডিয়ামের অংশসমূহ (Parts of Ommatidium)
+
+- <mark>ক্রিস্টালাইন কোণ কোষ (Crystalline cone cells)</mark>: এদের ক্ষরণ থেকে <mark>ক্রিস্টালাইন কোণ (Crystalline cone)</mark> গঠিত হয়।
+- <mark>কর্ণিয়া (Cornea)</mark>: এটি চোখের ওপর <mark>লেন্স (Lens)</mark>-এর মতো কাজ করে।
+- <mark>কর্ণিয়াজেন কোষ (Corneagen cells)</mark>: এদের ক্ষরণ থেকে <mark>কর্ণিয়া (Cornea)</mark> সৃষ্টি হয়।
+- <mark>র‍্যাবডোম (Rhabdome)</mark>:
+   
+   - এর মাধ্যমে আলো গৃহীত হয়।
+   - এতে বস্তুর প্রতিবিম্ব সৃষ্টি হয়।

@@ -178,6 +178,26 @@ def on_error(error):
     return jsonify(error=str(error)), 500
 
 
+def repair_stored_text():
+    """Rewrite every stored question/card file with math glyphs corrected."""
+    from pdf2md.mathglyph import repair_markdown
+    changed, scanned = [], 0
+    with lock:
+        for kind, names in (("q", questions.list_names()), ("f", [settings.FC_FILE])):
+            for name in names:
+                scanned += 1
+                try:
+                    text = load(kind, name)
+                except Exception:
+                    continue
+                fixed = repair_markdown(text)
+                if fixed != text:
+                    save(kind, name, fixed)
+                    changed.append(name)
+        questions.clear_caches()
+    return {"scanned": scanned, "changed": changed}
+
+
 def save_new_question_file(name, text):
     """Create a file without replacing existing progress, then invalidate the index."""
     with lock:
@@ -213,7 +233,7 @@ def save_new_question_file(name, text):
 
 app.register_blueprint(web_blueprint)
 app.register_blueprint(ai_blueprint(questions, lock))
-app.register_blueprint(pdf_converter_blueprint(save_new_question_file))
+app.register_blueprint(pdf_converter_blueprint(save_new_question_file, repair_stored_text))
 app.register_blueprint(questions_blueprint(questions))
 app.register_blueprint(cards_blueprint(cards))
 app.register_blueprint(health_blueprint(

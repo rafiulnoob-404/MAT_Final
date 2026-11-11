@@ -5,10 +5,21 @@ from pathlib import Path
 from flask import Blueprint, jsonify, request
 from tools.questions import parse_name
 from pdf2md.converter import convert, detect_kind
+from pdf2md.mathglyph import repair_markdown
 
 
-def create_blueprint(save_new):
+def create_blueprint(save_new, repair_existing=None):
     bp = Blueprint("pdf_converter", __name__)
+
+    @bp.post("/api/repair-text")
+    def repair_text():
+        """Repair garbled math glyphs in stored question/card files."""
+        body = request.get_json(silent=True) or {}
+        if not body.get("apply"):
+            return jsonify(ok=True, preview=repair_markdown(body.get("text", "")))
+        if not repair_existing:
+            return jsonify(error="Repair is not available."), 501
+        return jsonify(ok=True, **repair_existing())
 
     @bp.post("/api/pdf-convert")
     def pdf_convert():

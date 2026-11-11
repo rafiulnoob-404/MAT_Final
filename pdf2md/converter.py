@@ -77,8 +77,42 @@ def bijoy_to_unicode(text: str) -> str:
 #   items : [(y, x, text)]   y is global (page * 10000 + y on page), Bijoy already converted
 #   ticks : [(y, x)]         position of every "correct answer" tick (green drawing or tick glyph)
 #   vecs  : [(y, x)]         dark vector shapes = formulas the PDF drew as paths (no text to extract)
+# Font families that carry Bijoy-encoded Bangla.  The name test alone is not
+# enough: PDFs also ship them as "MJ-Normal", "Sutonny MJ", "Jomuna", plain
+# "MJ", or with a subset prefix "ABCDF+SutonnyMJ".
+_BIJOY_FONTS = ("sutonny", "jomuna", "akaash", "boishakhi", "prothoma", "shonar",
+                "shonarbangla", "adv", "mj", "bijoy")
+
+
 def _is_bijoy(font: str) -> bool:
-    return "sutonny" in font.lower() or font.lower().endswith("mj")
+    name = (font or "").lower().replace(" ", "").replace("-", "").replace(",", "")
+    if any(token in name for token in _BIJOY_FONTS):
+        return True
+    return name.endswith("mj") or "mj" == name
+
+
+# A Bijoy span is ASCII that uses these diacritic-ish glyphs heavily and has no
+# Unicode Bangla at all.  Used as a safety net when the font name is unhelpful
+# (missing, subset-named, or a plain "F1").
+# Only glyphs that are Bijoy-only: daggers, "not", ্ল, ক্ষ, ৃ, ৌ and the
+# currency slot.  Bullets (•), guillemets («), pilcrows (¶) and § are
+# deliberately excluded - they are legitimate in Unicode text.
+_BIJOY_MARKS = "\u2021\u2020\u00ac\u00f8\u00ff\u201e\u00f4\u00a4"
+
+
+def _looks_bijoy(text: str) -> bool:
+    """True when a span is plainly Bijoy text, whatever its font is called."""
+    if not text:
+        return False
+    if any("\u0980" <= ch <= "\u09ff" for ch in text):
+        return False                      # already Unicode Bangla
+    marks = sum(text.count(ch) for ch in _BIJOY_MARKS)
+    return marks >= 2 and marks / max(1, len(text)) >= 0.03
+
+
+def _maybe_bijoy(text: str, font: str) -> str:
+    """Convert a span to Unicode when it is Bijoy, however that was detected."""
+    return bijoy_to_unicode(text) if (_is_bijoy(font) or _looks_bijoy(text)) else text
 
 
 def _dark(c) -> bool:
@@ -108,7 +142,7 @@ def read_pymupdf(path):
                         continue
                     if "cmsy" in f.lower():                         # TeX symbol font: "!" is an arrow
                         t = t.replace("!", "→")
-                    parts.append(bijoy_to_unicode(t) if _is_bijoy(f) else t)
+                    parts.append(_maybe_bijoy(t, f))
                 text = _fix_text("".join(parts))
                 if text:
                     r = ln["bbox"]
@@ -197,7 +231,7 @@ def read_miner(path):
                         t = span
                         if "cmsy" in font.lower():
                             t = t.replace("!", "→")
-                        parts.append(bijoy_to_unicode(t) if _is_bijoy(font) else t)
+                        parts.append(_maybe_bijoy(t, font))
 
                 for c in g:
                     if pc is not None and c.x0 - pc.x1 > 0.2 * pc.size and not span.endswith(" ") and c.get_text() != " ":

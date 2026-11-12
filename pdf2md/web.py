@@ -34,8 +34,9 @@ def create_blueprint(save_new, repair_existing=None):
                 path = Path(temp) / "upload.pdf"
                 file.save(path)
                 kind = detect_kind(str(path))
-                # Image files are not currently supported by Practice Hub storage.
-                text, warnings = convert(str(path), bool(request.form.get("status")), kind=kind)
+                # Vector formulas are cropped and embedded as data-URI images (needs pymupdf).
+                text, warnings = convert(str(path), bool(request.form.get("status")), kind=kind,
+                                         img_dir=":data" if kind == "map" else None)
             count = text.count("### Q ")
             if not count:
                 return jsonify(error="No questions found. Please check that this is a supported exam result PDF.", warnings=warnings), 422

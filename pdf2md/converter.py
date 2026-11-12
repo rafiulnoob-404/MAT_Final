@@ -567,20 +567,44 @@ def detect_kind(path):
 
 # ---------------------------------------------------------------- markdown
 def _crop(doc, region, path, dpi=160):
+    """Crop a region to a PNG file; path=None returns PNG bytes instead."""
     y0, y1, x0, x1 = region
     pi = int(y0 // 10000)
     off = pi * 10000
     page = doc[pi]
     clip = pymupdf.Rect(x0, max(0, y0 - off), min(x1, page.rect.width), min(y1 - off, page.rect.height))
-    page.get_pixmap(dpi=dpi, clip=clip).save(str(path))
+    clip.y1 = max(clip.y0 + 4, clip.y1 - 2)              # drop the next row's top edge
+    pix = page.get_pixmap(dpi=dpi, clip=clip)
+    if path is None:
+        data = pix.tobytes("png")
+        try:                                             # trim blank margins if Pillow exists
+            import io
+            from PIL import Image, ImageChops
+            im = Image.open(io.BytesIO(data)).convert("RGB")
+            box = ImageChops.difference(im, Image.new("RGB", im.size, (255, 255, 255))).getbbox()
+            if box:
+                pad = 4
+                im = im.crop((max(0, box[0] - pad), max(0, box[1] - pad),
+                              min(im.width, box[2] + pad), min(im.height, box[3] + pad)))
+                out = io.BytesIO(); im.save(out, "PNG", optimize=True); data = out.getvalue()
+        except Exception:
+            pass
+        return data
+    pix.save(str(path))
 
 
 def to_markdown(qs, keep_status=False, doc=None, img_dir=None, tag="Q"):
-    blocks, warn = [], []
+    blocks, warn, embedded = [], [], {}
     for k, q in enumerate(qs, 1):
         def img(key):                                    # crop a formula region -> ![](img/..)
             if not (doc and img_dir and q["regions"].get(key)):
                 return ""
+            if img_dir == ":data":                       # embed as data URI (no files to store)
+                import base64
+                png = _crop(doc, q["regions"][key], None, dpi=130)
+                tok = f"@@IMG{len(embedded)}@@"
+                embedded[tok] = "![](data:image/png;base64," + base64.b64encode(png).decode() + ")"
+                return tok
             name = f"{tag}{k}_{key}.png"
             Path(img_dir).mkdir(parents=True, exist_ok=True)
             _crop(doc, q["regions"][key], Path(img_dir) / name)
@@ -608,7 +632,10 @@ def to_markdown(qs, keep_status=False, doc=None, img_dir=None, tag="Q"):
             + (q["status"] if keep_status else "")
             + "\n"
         )
-    return repair_markdown("\n".join(blocks)), warn
+    text = repair_markdown("\n".join(blocks))
+    for tok, uri in embedded.items():                    # restore after text repair
+        text = text.replace(tok, uri)
+    return text, warn
 
 
 def convert(pdf_path, keep_status=False, backend="auto", img_dir=None, kind=None):

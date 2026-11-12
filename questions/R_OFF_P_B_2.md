@@ -459,7 +459,16 @@ incorrect
 C
 
 ## explanation
-Az-276; (রেচনে বৃক্কের ভূমিকা);
+মানবদেহে পেশীর শক্তি সরবরাহকারী <mark>ক্রিয়েটিন (Creatine)</mark> মূলত তিনটি নির্দিষ্ট অ্যামিনো এসিডের সমন্বয়ে তৈরি হয়। এগুলো হলো:
+1. **গ্লাইসিন (Glycine)**
+2. **আর্জিনিন (Arginine)**
+3. **মেথিওনিন (Methionine)**
+
+> 🧠 **নমনিক/মৃতপিক (Memory Trick):** 
+> ক্রিয়েটিন তৈরির উপাদান মনে রাখার ছন্দ: **"GAM"** 
+> * **G** = <mark>Glycine</mark>
+> * **A** = <mark>Arginine</mark>
+> * **M** = <mark>Methionine</mark>
 
 ## status
 incorrect

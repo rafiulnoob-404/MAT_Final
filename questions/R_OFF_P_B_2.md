@@ -660,7 +660,7 @@ D
 Az-416; (জিনগত ও ক্রোমোসোমীয় সমস্যা); • অটোসোমাল ব্যাধি → Huntington’s disease। • সেক্স-লিংকড ব্যাধি → Fragile-X Syndrome। • ট্রাইসোমি → Down Syndrome। • মদ্যপান → Foetal alcohol Syndrome।
 
 ## status
-incorrect
+correct
 
 ### Q 38
 

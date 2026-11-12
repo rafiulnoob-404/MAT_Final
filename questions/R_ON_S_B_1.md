@@ -1202,7 +1202,7 @@ C
 Ha-174; (ব্যাকটেরিয়ার উপকারিতা); Nitrosomonas , Nitrococcus দুটি নাইট্রিফিকেশনে ব্যবহৃত হয়। Bacillus thuringiensis পতঙ্গনাশক হিসাবে ব্যবহৃত হয়। Bacillus megaterium চা, কফি, তামাক প্রক্রিয়াজাতকরণে ব্যবষত হয়।
 
 ## status
-skipped
+correct
 
 ### Q 68
 

@@ -95,7 +95,8 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border:0;border-radiu
 .brand #app-name{font-size:1.5rem;font-weight:800;line-height:1.1}
 .brand #app-tag{font-size:.82rem;color:var(--mut);line-height:1.4}
 .t-animate{overflow:hidden;display:inline-block;width:0;animation:typewrite 1.2s steps(24,end) forwards}
-.t-animate#app-tag{animation-delay:1.35s;opacity:0;animation:fadein 1s steps(1,end) 1.35s forwards}
+.t-animate#app-name{white-space:nowrap}
+.t-animate#app-tag{display:block;width:auto;overflow:visible;white-space:normal;opacity:0;animation:fadein .8s ease 1.2s forwards}
 @keyframes typewrite{to{width:100%}}
 @keyframes fadein{to{opacity:1}}
 #sync-banner{position:fixed;top:0;left:0;right:0;background:var(--ac);color:#fff;padding:10px 18px;display:none;justify-content:space-between;align-items:center;gap:12px;z-index:70;font-size:.88rem;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.2)}
@@ -141,6 +142,18 @@ input[type=text],input[type=password]{width:100%;border:0;background:var(--bg);c
 @media(max-width:520px){.g2{gap:14px}.card{padding:14px}.rc{flex-direction:column;text-align:center;gap:8px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.big{font-size:1.6rem}}
 @media(max-width:820px){nav{position:fixed;left:12px;right:12px;bottom:12px;margin:0;z-index:20}}
 @media(min-width:821px){nav{max-width:620px;margin:0 auto 22px}.shell{padding-bottom:40px}#toast{bottom:24px}}
+
+.note .nb{overflow-x:auto;min-width:0}
+.note .nb ul,.note .nb ol,.md ul,.md ol{padding-left:1.3em;margin-left:0}
+.note .nb table,.md table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.note .nb th,.note .nb td,.md th,.md td{min-width:64px;word-break:normal;overflow-wrap:break-word;vertical-align:top}
+.note .nb td:first-child,.md td:first-child{min-width:84px}
+.katex-display{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.katex{font-size:1.05em}
+body.has-sync .shell{padding-top:64px}
+#sync-banner{left:12px;right:12px;top:10px;border-radius:16px}
+.md img,.stem img,.opt img,.note img{max-width:100%;height:auto;vertical-align:middle}
+.opt img{max-height:56px}
 </style></head><body>
 <div class="shell">
 <div id="sync-banner"><span id="sync-banner-msg">অসিঙ্কড পরিবর্তন আছে — <b>সিঙ্ক এখন করুন</b> · ৩০ সেকেন্ডে অটো সিঙ্ক হবে</span><button id="sync-now-btn">সিঙ্ক এখন করুন</button></div>
@@ -268,7 +281,7 @@ const QC=new Map(),key=r=>r.f+'#'+r.n,ST={c:'correct',i:'incorrect',s:'skipped',
 const toast=(m,ok)=>{const t=$('#toast');t.textContent=m;t.style.color=ok?'var(--ok)':'var(--bad)';t.style.display='block';setTimeout(()=>t.style.display='none',ok?2000:5000)};
 const post=async(u,b,method='POST',h)=>{const r=await fetch(u,{method,headers:{'Content-Type':'application/json',...(h||{})},body:JSON.stringify(b||{})});let j={};try{j=await r.json()}catch(e){}if(!r.ok)throw j.error||('HTTP '+r.status);return j};
 let syncPending=false,syncTimer=null;
-function syncBanner(show){const b=$('#sync-banner');if(!b)return;b.style.display=show?'flex':'none';if(!show)clearSyncTimer();}
+function syncBanner(show){const b=$('#sync-banner');if(!b)return;b.style.display=show?'flex':'none';document.body.classList.toggle('has-sync',!!show);if(!show)clearSyncTimer();}
 function clearSyncTimer(){clearTimeout(syncTimer);syncTimer=null;}
 function startSyncTimer(){clearSyncTimer();syncTimer=setTimeout(doSync,30000);}
 async function doSync(){clearSyncTimer();try{const r=await post('/api/sync');syncPending=false;syncBanner(false);toast((r.pending?r.pending+' ফাইল পেন্ডিং':'সিঙ্ক করা হয়েছে'),1)}catch(e){toast('সিঙ্ক ব্যর্থ: '+e);syncBanner(true);startSyncTimer();}}
@@ -362,7 +375,7 @@ function dash(){
    if(dashStop){dashRaf=0;return}
    const t=Math.min(1,(now-t0)/dur),x=1-Math.pow(1-t,3);
    for(const[n,v]of nums)n.textContent=Math.round(v*x);
-   for(const[e,tx,pv,cp]of rings){const vv=cp*x;e.setAttribute('stroke-dasharray',`${pv*vv/100} ${cp}`);if(tx)tx.textContent=Math.round(vv)+'%'}
+   for(const[e,tx,pv,cp]of rings){const vv=cp*x;e.setAttribute('stroke-dasharray',`${pv*vv/100} ${pv}`);if(tx)tx.textContent=Math.round(vv)+'%'}
    for(const[e,l,o,cc]of arcs){const v=l*x;e.setAttribute('stroke-dasharray',`${v} ${cc-v}`);e.setAttribute('stroke-dashoffset',`${-o*x}`)}
    for(const[e,w]of bars)e.style.width=(w*x).toFixed(2)+'%';
    if(t<1)dashRaf=requestAnimationFrame(step);else next()

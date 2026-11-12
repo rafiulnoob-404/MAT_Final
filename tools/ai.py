@@ -87,13 +87,13 @@ def gem_err_text(error):
     return f"Gemini error {error.code}: {message[:200] or error.reason}"
 
 
-def gemini(prompt, key, model):
+def gemini(prompt, key, model, max_tokens=2048, temperature=0.3, strict=False):
     if not key or not key.isascii():
         raise AIError("Gemini API key missing. Set GEMINI_API_KEY on the server or add it in Settings.", 400)
     if not MODEL_OK.match(model or ""):
         raise AIError("Invalid Gemini model name.", 400)
     body = json.dumps({"contents": [{"parts": [{"text": prompt}]}],
-                       "generationConfig": {"temperature": 0.3, "maxOutputTokens": 2048}}).encode()
+                       "generationConfig": {"temperature": temperature, "maxOutputTokens": max_tokens}}).encode()
     message, payload = "Gemini request failed.", None
     for attempt in range(3):
         req = urllib.request.Request(
@@ -130,6 +130,8 @@ def gemini(prompt, key, model):
     text = "".join(part.get("text", "") for part in parts if not part.get("thought")).strip()
     if not text:
         raise AIError(f"Empty Gemini response ({candidate.get('finishReason', 'unknown')}).", 502)
+    if strict and candidate.get("finishReason") == "MAX_TOKENS":
+        raise AIError("Gemini output was cut off. Try a shorter card.", 502)
     return text
 
 
@@ -281,38 +283,30 @@ def create_blueprint(questions, lock):
             return jsonify(error="card too long (max 8000 chars)"), 400
         key = (request.headers.get("X-Gemini-Key") or os.environ.get("GEMINI_API_KEY", "")).strip()
         model = (request.headers.get("X-Gemini-Model") or settings.GEM_MODEL).strip()
-        prompt = ("Reformat and refine the provided flashcard text into clean, highly structured, and scannable Markdown.\n\n"
-                  + (f"User instructions (must be followed while keeping the strict output rules above):\n{instructions}\n\n"
-                     if instructions else "")
-                  + "Strict Execution Rules:\n"
-                  "1. **Language — Bangla Only:** Write the entire flashcard in proper Bangla (Bengali script) only. "
-                  "Never write Banglish (Bangla typed with Latin letters) and never write full sentences in English — "
-                  "when the supplied text is in English or mixed, translate the content and rewrite it in Bangla. "
-                  "**Scientific-term exception:** every scientific, technical, medical, and mathematical term, chemical "
-                  "name or formula, unit, and standard abbreviation must also be given in English, right after the Bangla "
-                  "term in parentheses, e.g. <mark>মসৃণ পেশি (Smooth muscle)</mark>, <mark>শ্বসন (Respiration)</mark>, "
-                  "<mark>মাইটোকন্ড্রিয়া (Mitochondria)</mark>. Keep the English spelling of these terms untranslated and "
-                  "consistent everywhere; if a term has no accepted Bangla equivalent, keep the English term as it is. "
-                  "Numbers, units, symbols, and existing inline LaTeX ($...$) stay exactly as they are. "
-                  "Retain the original facts and correct any grammatical errors, spelling mistakes, or incomplete "
-                  "sentences; do not introduce unsupported facts.\n"
-                  "2. **Structural Formatting:** Keep any existing headings/headlines intact. "
-                  "Format main concepts into concise paragraphs, clean Markdown bullet points, or "
-                  "Markdown blockquotes (> ...) for mnemonics, key rules, or important callouts. "
-                  "Preserve existing blockquotes (> ...). Use a compact table only if the data is strictly tabular.\n"
-                  "3. **Rich Text styling:** Bold key terms or emphasize them using italics, <u>, or "
-                  "<mark>key term</mark> highlights for clarity. Use <mark>...</mark> highlights instead of "
-                  "inline code backticks, and convert any backtick inline-code terms into <mark>...</mark> highlights. "
-                  "In bullet points, bold primary keywords, examples, and key values. "
-                  "Preserve all existing inline LaTeX ($...$), <u>, and <mark> tags as they are.\n"
-                  "4. **Complete Reference Removal:** Strip out all references, book names, author names, "
-                  "page numbers, and custom source codes completely, including source tags, citations, "
-                  "footnotes, and brackets containing page, book, or topic references regardless of format "
-                  "(e.g., [আজমল স্যার-২০২৬, পৃ-৩৪২], [উন্মেষ মেডিট্রিক্স, পৃ-২১৭], Ha-315;, Alim-444;).\n"
-                  "5. **Strict Output Constraints:** No preamble, conversational filler, or intros. "
-                  "Do not use code fences around the final output. Output only the finalized flashcard content.\n\n"
-                  "Flashcard Text:\n" + body)
-        text = gemini(prompt, key, model)
+        prompt = (
+            "You format study flashcards for a Bangladeshi medical/engineering admission test. "
+            "Rewrite the card below as clean, scannable Markdown.\n\n"
+            "RULES\n"
+            "1. Keep EVERY fact, number, name and example. Never add, guess or drop information. "
+            "Fix only spelling, grammar and broken sentences.\n"
+            "2. Language: Bangla. Do not use Banglish. If the text is English, translate it to Bangla. "
+            "After each scientific/technical term, add the English in parentheses once, "
+            "e.g. মাইটোকন্ড্রিয়া (Mitochondria). Numbers, units, symbols and $...$ LaTeX stay unchanged.\n"
+            "3. Structure: keep existing headings. A short title line in bold if none exists. "
+            "Use '- ' bullets for lists (one idea per bullet, short). Use '> ' blockquote only for "
+            "mnemonics/tricks/key rules. Keep existing tables exactly as tables (same rows and columns); "
+            "make a table only when the data is clearly rows x columns.\n"
+            "4. Emphasis: **bold** the key term at the start of a bullet. Use <mark>...</mark> sparingly "
+            "(at most one or two per bullet, only the single most testable word or value). "
+            "Never use backticks; never highlight whole sentences. Keep <u> tags that already exist.\n"
+            "5. Remove all references: book/author names, page numbers, source codes and bracketed "
+            "citations such as [আজমল স্যার-২০২৬, পৃ-৩৪২], [উন্মেষ মেডিট্রিক্স, পৃ-২১৭] or Ha-315;.\n"
+            "6. Output ONLY the finished card. No intro, no explanation, no code fences. "
+            "Keep it about the same length as the input.\n\n"
+            + (f"EXTRA USER INSTRUCTIONS (follow them, but never break rules 1 and 6):\n{instructions}\n\n"
+               if instructions else "")
+            + "Flashcard Text:\n" + body)
+        text = gemini(prompt, key, model, max_tokens=8192, temperature=0.2, strict=True)
         text = re.sub(r"^```(?:markdown|md)?[ \t]*\n|\n```[ \t]*$", "", text.strip())
         output = clean_body(strip_refs(text))
         if not output:

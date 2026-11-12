@@ -104,7 +104,9 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border:0;border-radiu
 #sync-banner button{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.45)}
 #ai-instr{width:100%;border:0;border-radius:14px;padding:10px 14px;font:inherit;background:var(--bg);color:var(--tx);box-shadow:inset 3px 3px 7px var(--s1),inset -3px -3px 7px var(--s2);resize:vertical}
 /* flashcards: image-card layout (no download button) */
-.notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:22px;margin-top:16px}
+.notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:16px;align-items:start}
+.note.wide{grid-column:1/-1}
+@media(max-width:520px){.notes{gap:12px}.note{padding:18px 14px 14px;border-radius:24px}.note .nb{font-size:.92rem}}
 .note{position:relative;overflow:hidden;color:#1b2440;border-radius:32px;padding:26px 24px 18px;box-shadow:0 14px 28px rgba(0,0,0,.14);min-width:0;display:flex;flex-direction:column;gap:14px}
 .note::before{content:"";position:absolute;left:-22%;top:-18%;width:64%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.55);pointer-events:none}
 .note>*{position:relative}
@@ -156,6 +158,10 @@ body.has-sync .shell{padding-top:64px}
 .opt img{max-height:56px}
 .brand #app-tag{display:block;min-height:1.4em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #app-tag .cursor{height:.95em}
+.dlg{max-width:380px}.dlg p{margin:6px 0 14px}.dlg .acts{justify-content:flex-end;margin-top:12px}
+.dlg .dg{display:flex;gap:12px;align-items:center}.dlg .dg input{text-align:center}
+.btn.dng{color:var(--bad)}
+[data-theme=dark] .stem img,[data-theme=dark] .opt img,[data-theme=dark] .sol img{filter:invert(1) hue-rotate(180deg);background:none}
 </style></head><body>
 <div class="shell">
 <div id="sync-banner"><span id="sync-banner-msg">Unsynced changes — <b>sync now</b> · auto-sync in 30s</span><button id="sync-now-btn">Sync now</button></div>
@@ -262,6 +268,7 @@ body.has-sync .shell{padding-top:64px}
  <p class="mut">Markdown, &gt; blockquotes, $LaTeX$, &lt;u&gt; and &lt;mark&gt; tags are supported. Ctrl/⌘+Enter saves.</p>
  <div class="acts"><button class="btn p" id="xesave">Save</button><button class="btn" id="xecancel">Cancel</button></div>
 </div></div>
+<div class="modal" id="dlg" hidden style="z-index:80"><div class="card mbox dlg"><h3 id="dlt"></h3><p class="mut" id="dlm"></p><div id="dlb"></div><div class="acts"><button class="btn" id="dlc">Cancel</button><button class="btn p" id="dlo">OK</button></div></div></div>
 <div id="toast"></div>
 {% raw %}
 <script>
@@ -607,10 +614,13 @@ async function loadCards(){
  stopType();
  try{C=await (await fetch('/api/cards')).json()}catch(e){toast('Cards load failed')}
  $('#sv').hidden=true;$('#cg').hidden=false;cardsUI()}
+function big(b){
+ const t=(b||'').replace(/<[^>]+>|[*_#>`|-]/g,'').trim(),lines=(b||'').split('\n').filter(x=>x.trim()).length;
+ return t.length>260||lines>8||/^\|.+\|\s*$/m.test(b||'')&&lines>6}
 function cardsUI(){
  $('#ccnt').textContent=C.length+' cards';
  const newest=[...C].sort((a,b)=>b.id-a.id);
- $('#cg').innerHTML=newest.length?newest.map(c=>`<div class="note" data-id="${c.id}" style="background:${c.color}"><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="f">AI format</button><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`).join(''):'<div class="mut">No cards yet. Tap "Add card".</div>';
+ $('#cg').innerHTML=newest.length?newest.map(c=>`<div class="note${big(c.body)?' wide':''}" data-id="${c.id}" style="background:${c.color}"><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="f">AI format</button><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`).join(''):'<div class="mut">No cards yet. Tap "Add card".</div>';
  math($('#cg'));
  $('#cg').querySelectorAll('.note button').forEach(b=>b.onclick=async()=>{
   const id=+b.closest('.note').dataset.id,c=C.find(x=>x.id===id),a=b.dataset.a;
@@ -620,7 +630,7 @@ function cardsUI(){
    try{const r=await post('/api/ai/format-card',{body:c.body,instructions:$('#ai-instr').value.trim()});
     await post('/api/cards/'+id,{body:r.body,color:c.color},'PUT');toast('Formatted',1);loadCards();markDirty()}
    catch(e){toast('AI failed: '+e);b.disabled=false;b.textContent='AI format'}}
-  else if(confirm('Delete this card?')){try{await post('/api/cards/'+id,{},'DELETE');loadCards();markDirty()}catch(e){toast('Delete failed: '+e)}}})}
+  else if(await dlg({title:'Delete card?',msg:'This cannot be undone.',danger:1,ok:'Delete'})){try{await post('/api/cards/'+id,{},'DELETE');loadCards();markDirty()}catch(e){toast('Delete failed: '+e)}}})}
 function study(){
  if(!C.length)return toast('No cards yet');
  deck=[...C];di=0;$('#cg').hidden=true;$('#sv').hidden=false;deckUI()}
@@ -669,8 +679,10 @@ $('#tbar').onclick=async e=>{
   }else document.execCommand('formatBlock',false,'blockquote')}
  else if(c==='mark'){const t=getSelection().toString();if(t)document.execCommand('insertHTML',false,'<mark>'+esc(t)+'</mark>')}
  else if(c==='table'){
-  const v=(prompt('Rows x Columns','3x2')||'').match(/(\d+)\s*[x×*,]\s*(\d+)/i);if(!v)return;
-  const r=Math.min(+v[1],20),k=Math.min(+v[2],8);let h='<table>';
+  const sel=getSelection(),rng=sel.rangeCount?sel.getRangeAt(0).cloneRange():null;
+  const v=await dlg({title:'Insert table',msg:'Rows × columns (max 20 × 8)',input:[3,2,'Rows','Columns'],ok:'Insert'});
+  if(!v)return;$('#edit').focus();if(rng){sel.removeAllRanges();sel.addRange(rng)}
+  const r=Math.min(Math.max(+v[0]||0,1),20),k=Math.min(Math.max(+v[1]||0,1),8);let h='<table>';
   for(let i=0;i<r;i++){h+='<tr>'+Array(k).fill(i?'<td>&nbsp;</td>':'<th>&nbsp;</th>').join('')+'</tr>'}
   document.execCommand('insertHTML',false,h+'</table><div><br></div>')}
  else if(c==='clear')document.execCommand('removeFormat');
@@ -822,6 +834,18 @@ loadIndex().catch(e=>toast('Load failed: '+e));
   if(n>0){n--;return setTimeout(tick,28)}
   dir=1;i=(i+1)%T.length;setTimeout(tick,350)};
  setTimeout(tick,1300)})();
+
+/* themed dialogs (replace native confirm/prompt) */
+function dlg({title,msg='',input,danger,ok='OK'}){return new Promise(res=>{
+ const d=$('#dlg'),b=$('#dlb'),o=$('#dlo');
+ $('#dlt').textContent=title;$('#dlm').textContent=msg;$('#dlm').hidden=!msg;o.textContent=ok;o.classList.toggle('dng',!!danger);
+ b.innerHTML=input?`<div class="dg"><input type="text" id="dli1" inputmode="numeric" value="${input[0]}" aria-label="${input[2]}"><span class="mut">×</span><input type="text" id="dli2" inputmode="numeric" value="${input[1]}" aria-label="${input[3]}"></div>`:'';
+ const done=v=>{d.hidden=true;o.onclick=c.onclick=d.onkeydown=null;res(v)};
+ const c=$('#dlc');
+ o.onclick=()=>done(input?[$('#dli1').value,$('#dli2').value]:true);
+ c.onclick=()=>done(input?null:false);
+ d.onkeydown=e=>{if(e.key==='Escape')c.click();else if(e.key==='Enter')o.click()};
+ d.hidden=false;(input?$('#dli1'):o).focus()})}
 </script>
 {% endraw %}
 </body></html>

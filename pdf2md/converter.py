@@ -352,6 +352,7 @@ def parse(items, ticks, vecs=()):
                 nxt_col = [d[1] for d in letters if abs(d[0] - c[0]) < 8 and d[1] > c[1]]
                 q["regions"][c[2]] = (c[0] - 14, (min(nxt_row) - 14) if nxt_row else bottom,
                                       c[1] + 14, (min(nxt_col) - 4) if nxt_col else 595)
+        q["regions"]["ALL"] = (y0 + 8, bottom, 20, 595)
         q["vec"] = {k: any(r[0] <= vy <= r[1] and r[2] <= vx <= r[3] for vy, vx in vecs)
                     for k, r in q["regions"].items()}
         q["sol"] = re.sub(r"^জেনে রাখো\s*[:ঃ]\s*", "", _rows_join(sol)).strip()
@@ -581,6 +582,9 @@ def _crop(doc, region, path, dpi=160):
             import io
             from PIL import Image, ImageChops
             im = Image.open(io.BytesIO(data)).convert("RGB")
+            # erase the green answer tick / answer-box border so crops never reveal the answer
+            im.putdata([(255, 255, 255) if g - max(r, b) > 18 else (r, g, b)
+                        for r, g, b in im.getdata()])
             box = ImageChops.difference(im, Image.new("RGB", im.size, (255, 255, 255))).getbbox()
             if box:
                 pad = 4
@@ -611,14 +615,26 @@ def to_markdown(qs, keep_status=False, doc=None, img_dir=None, tag="Q"):
             return f"![]({Path(img_dir).name}/{name})"
 
         opts = []
+        unresolved = []
         for L in "ABCD":
             o = q["opts"].get(L, "")
             if q["vec"].get(L) or not o:
                 im = img(L)
-                o = (o + " " + im).strip() if im else (o or "(formula – see PDF)")
+                if im:
+                    o = im                              # image only: PDF text for these is garbled fragments
+                else:
+                    unresolved.append(L)
+                    o = o or "(formula – see image above)"
                 warn.append(f"Q{q['n']}: option {L} has a formula drawn as vector"
                             + (" -> cropped to image" if im else " -> fill by hand"))
             opts.append(o)
+        if unresolved and q["regions"].get("ALL"):       # no per-option region: crop the whole block once
+            q["regions"]["Q"] = q["regions"]["ALL"]
+            q["vec"]["Q"] = True
+            q["q"] = ""
+            opts = [f"Option {L}" for L in "ABCD"]      # the image already shows the real options
+            warn[:] = [w for w in warn if not w.startswith(f"Q{q['n']}: option")]
+            warn.append(f"Q{q['n']}: options not separable -> whole question cropped as one image")
         if q["vec"].get("Q") or not q["q"]:
             im = img("Q")
             q["q"] = (q["q"] + "\n\n" + im).strip() if im else (q["q"] or "(question is an image – see PDF)")

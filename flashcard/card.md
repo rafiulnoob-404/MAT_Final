@@ -450,3 +450,11 @@ Ha-250; (প্লাসেন্টেশন বা অমরাবিন্য
 > - **G** = <mark>Glycine</mark>
 > - **A** = <mark>Arginine</mark>
 > - **M** = <mark>Methionine</mark>
+
+### Card 57
+<!-- color: #ffd6e0 -->
+
+| বৈশিষ্ট্য (Feature) | ডান ফুসফুস (Right lung) | বাম ফুসফুস (Left lung) |
+| --- | --- | --- |
+| **খণ্ড বা লোব (Lobe)** | ৩টি (<mark>৩</mark>) | ২টি (<mark>২</mark>) |
+| **লোবিউল (Lobule)** | ১০টি (<mark>১০</mark>) | ৮টি (<mark>৮</mark>) |

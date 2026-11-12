@@ -1274,7 +1274,7 @@ B
 Az-457; (জিনতত্ত্ব); মেন্ডেল-কে Father of Genetics বলা হয়। উইলিয়াম বেটসন ১৯০৫ খ্রিস্টাব্দে সর্বপ্রথম Genetics শব্দ প্রচলন করেন।
 
 ## status
-incorrect
+correct
 
 ### Q 72
 

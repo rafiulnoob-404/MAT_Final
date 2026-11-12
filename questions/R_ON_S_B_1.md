@@ -1454,7 +1454,7 @@ D
 Az-07; দ্বিভ্রুণস্তরী প্রাণী → Hydra (Cnidaria); ত্রিভ্রুণস্তরী প্রাণী → Homosapiens, Platyhelminthes.
 
 ## status
-skipped
+incorrect
 
 ### Q 82
 

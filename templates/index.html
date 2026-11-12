@@ -154,11 +154,13 @@ body.has-sync .shell{padding-top:64px}
 #sync-banner{left:12px;right:12px;top:10px;border-radius:16px}
 .md img,.stem img,.opt img,.note img{max-width:100%;height:auto;vertical-align:middle}
 .opt img{max-height:56px}
+.brand #app-tag{display:block;min-height:1.4em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app-tag .cursor{height:.95em}
 </style></head><body>
 <div class="shell">
-<div id="sync-banner"><span id="sync-banner-msg">অসিঙ্কড পরিবর্তন আছে — <b>সিঙ্ক এখন করুন</b> · ৩০ সেকেন্ডে অটো সিঙ্ক হবে</span><button id="sync-now-btn">সিঙ্ক এখন করুন</button></div>
+<div id="sync-banner"><span id="sync-banner-msg">Unsynced changes — <b>sync now</b> · auto-sync in 30s</span><button id="sync-now-btn">Sync now</button></div>
 <header>
-  <div class="brand"><span class="t-animate" id="app-name">MAT FINAL</span><span class="t-animate" id="app-tag">a web for practicing mat questions   ///   UNMESH, RETINA mcqs   ///   10k+ solved</span></div>
+  <div class="brand"><span class="t-animate" id="app-name">MAT FINAL</span><span id="app-tag" aria-live="polite"></span></div>
   <span class="mut" id="meta"></span>
 </header>
 <nav id="nav">
@@ -172,7 +174,7 @@ body.has-sync .shell{padding-top:64px}
 <section id="t-dash"><div id="ov"></div><h3 class="sec">Subjects</h3><div class="tiles" id="sb"></div></section>
 
 <section id="t-questions" hidden>
- <div class="tools" style="gap:10px;align-items:center"><button class="btn" id="filter-toggle">Filters ▾</button><span class="mut" id="filter-sum">ফিল্টার খোলা আছে — লুকানোর জন্য ট্যাপ করুন</span></div>
+ <div class="tools" style="gap:10px;align-items:center"><button class="btn" id="filter-toggle">Filters ▾</button><span class="mut" id="filter-sum">Filters open — tap to hide</span></div>
  <div id="filter-wrap">
  <div class="frow"><span class="mut">Coaching</span><div class="chips" id="f-co"></div></div>
  <div class="frow"><span class="mut">Mode</span><div class="chips" id="f-mo"></div></div>
@@ -245,8 +247,8 @@ body.has-sync .shell{padding-top:64px}
   <button data-c="mark"><mark>Highlight</mark></button><button data-c="table">Table</button><button data-c="ai">✨ AI format</button><button data-c="clear">Clear</button>
  </div>
  <div id="edit" contenteditable="true"></div>
- <label class="mut" style="margin-top:10px">AI ফরম্যাট নির্দেশনা (ঈच्छাকritto)</label>
- <textarea id="ai-instr" rows="2" placeholder="যেমন: সংক্ষিপ্ত করে বুলেটে লিখুন, শুধু গুরুত্বপূর্ণ পয়েন্ট রাখুন"></textarea>
+ <label class="mut" style="margin-top:10px">AI format instructions (optional)</label>
+ <textarea id="ai-instr" rows="2" placeholder="e.g. keep it short, bullets only, key points only"></textarea>
  <div class="csw" id="csw"></div>
  <div class="acts"><button class="btn p" id="esave">Save</button><button class="btn" id="ecancel">Cancel</button></div>
 </div></div>
@@ -284,7 +286,7 @@ let syncPending=false,syncTimer=null;
 function syncBanner(show){const b=$('#sync-banner');if(!b)return;b.style.display=show?'flex':'none';document.body.classList.toggle('has-sync',!!show);if(!show)clearSyncTimer();}
 function clearSyncTimer(){clearTimeout(syncTimer);syncTimer=null;}
 function startSyncTimer(){clearSyncTimer();syncTimer=setTimeout(doSync,30000);}
-async function doSync(){clearSyncTimer();try{const r=await post('/api/sync');syncPending=false;syncBanner(false);toast((r.pending?r.pending+' ফাইল পেন্ডিং':'সিঙ্ক করা হয়েছে'),1)}catch(e){toast('সিঙ্ক ব্যর্থ: '+e);syncBanner(true);startSyncTimer();}}
+async function doSync(){clearSyncTimer();try{const r=await post('/api/sync');syncPending=false;syncBanner(false);toast((r.pending?r.pending+' file(s) pending':'Synced'),1)}catch(e){toast('Sync failed: '+e);syncBanner(true);startSyncTimer();}}
 function markDirty(){syncPending=true;syncBanner(true);startSyncTimer();}
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const sc=s=>s==='correct'?'up':s==='incorrect'?'dn':s==='skipped'?'sk':'';
@@ -397,7 +399,7 @@ function fUI(){
  $('#chips').innerHTML=Object.entries(SUBJ).map(([k,v])=>`<button class="chip${F.sb.has(k)?' on':''}" data-k="${k}">${v}</button>`).join('');
  $('#chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{F.sb.has(b.dataset.k)?F.sb.delete(b.dataset.k):F.sb.add(b.dataset.k);fUI();build()})}
 function stc(){seg('#stc',STF,sv,k=>{sv=k;stc();build()})}
-$('#filter-toggle').onclick=()=>{const w=$('#filter-wrap');w.hidden=!w.hidden;$('#filter-toggle').textContent=w.hidden?'Filters ▸':'Filters ▾';$('#filter-sum').textContent=w.hidden?'ফিল্টার লুকানো আছে':'ফিল্টার খোলা আছে — লুকানোর জন্য ট্যাপ করুন'};
+$('#filter-toggle').onclick=()=>{const w=$('#filter-wrap');w.hidden=!w.hidden;$('#filter-toggle').textContent=w.hidden?'Filters ▸':'Filters ▾';$('#filter-sum').textContent=w.hidden?'Filters hidden':'Filters open — tap to hide'};
 const okq=q=>(F.co==='all'||q.co===F.co)&&(F.mo==='all'||q.mo===F.mo)&&(F.ph==='all'||q.ph===F.ph)&&(!F.sb.size||(q.ph!=='MT'&&F.sb.has(q.sb)))&&(sv==='all'||(sv==='new'?!q.st:q.st===sv));
 function build(){queue=shuf(IDX.filter(okq));cur=0;sess={c:0,i:0,s:0};show()}
 
@@ -447,7 +449,7 @@ async function show(){
 document.addEventListener('click',()=>{const m=$('#atm');if(m&&!m.hidden){m.hidden=true;if(answered)sched(2000)}});
 
 async function mark(q,st){
- try{await post('/api/status',{file:q.file,n:q.n,status:st});q.st=st;if(q.r)q.r.st=st;sess[st[0]]++}
+ try{await post('/api/status',{file:q.file,n:q.n,status:st});q.st=st;if(q.r)q.r.st=st;sess[st[0]]++;markDirty()}
  catch(e){toast('Save failed: '+e)}}
 async function pick(i){
  if(answered)return;answered=true;const q=curQ,a=q.ans;
@@ -462,7 +464,7 @@ function sol(q){
  $('#xed').onclick=()=>editExp(q.exp||'',`${q.file.replace('.md','')} · Q${q.n}`,async text=>{
   const r=await post('/api/ai/explanation',{file:q.file,n:q.n,text});
   q.exp=r.explanation;if(typeof r.ans==='number'&&r.ans>=0)q.ans=r.ans;
-  sol(q);toast('Explanation saved',1)},1);
+  sol(q);toast('Explanation saved',1);markDirty()},1);
  math($('#sol'))}
 
 /* explanation editor: edit the AI response (or any stored explanation) */
@@ -481,7 +483,7 @@ $('#xesave').onclick=async()=>{
  const text=$('#xet').value.trim();
  if(!text)return toast('Explanation is empty');
  const b=$('#xesave'),cb=xSave;b.disabled=true;b.textContent='Saving…';
- try{await cb(text);closeExp()}
+ try{await cb(text);closeExp();markDirty()}
  catch(e){toast('Save failed: '+e)}
  finally{b.disabled=false;b.textContent='Save'}
 };
@@ -509,7 +511,7 @@ function renderCmp(){
   cmpNew=text;renderCmp();toast('Edited — choose Keep to save',1)})}
 async function keep(ch){
  const q=cmpQ;if(!q)return;
- try{const r=await post('/api/ai/keep',{file:q.file,n:q.n,choice:ch,text:cmpNew});q.exp=r.explanation;$('#cmp').hidden=true;cmpQ=null;answered=true;sol(q);toast('Saved',1)}
+ try{const r=await post('/api/ai/keep',{file:q.file,n:q.n,choice:ch,text:cmpNew});q.exp=r.explanation;$('#cmp').hidden=true;cmpQ=null;answered=true;sol(q);toast('Saved',1);markDirty()}
  catch(e){toast('Save failed: '+e)}}
 $('#k1').onclick=()=>keep('keep1');$('#k2').onclick=()=>keep('keep2');$('#kb').onclick=()=>keep('both');
 
@@ -805,6 +807,21 @@ const t0=localStorage.tab;
 tab(['dash','questions','cards','files','settings'].includes(t0)?t0:'dash');
 fUI();stc();
 loadIndex().catch(e=>toast('Load failed: '+e));
+
+/* rotating taglines: type one, hold, erase, next, forever */
+(()=>{const el=document.getElementById('app-tag');if(!el)return;
+ const T=['a web for practicing mat questions','UNMESH, RETINA mcqs','10k+ solved'];
+ const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const cur=document.createElement('span');cur.className='cursor';
+ let i=0,n=0,dir=1;
+ const draw=()=>{el.textContent=T[i].slice(0,n);el.appendChild(cur)};
+ if(reduce){el.textContent=T[0];setInterval(()=>{i=(i+1)%T.length;el.textContent=T[i]},3000);return}
+ const tick=()=>{
+  draw();
+  if(dir===1){if(n<T[i].length){n++;return setTimeout(tick,55)}dir=-1;return setTimeout(tick,1800)}
+  if(n>0){n--;return setTimeout(tick,28)}
+  dir=1;i=(i+1)%T.length;setTimeout(tick,350)};
+ setTimeout(tick,1300)})();
 </script>
 {% endraw %}
 </body></html>

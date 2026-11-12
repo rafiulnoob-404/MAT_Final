@@ -7,3 +7,4 @@ gunicorn>=21.2.0
 # PDF-to-Markdown conversion
 PyMuPDF>=1.24.3
 bijoy2unicode>=0.1.1
+Pillow>=10.0.0

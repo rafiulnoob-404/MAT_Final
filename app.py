@@ -159,7 +159,9 @@ cards = CardService(
     load=lambda name: load("f", name),
     save=lambda name, text: save("f", name, text),
     lock=lock,
-    filename=settings.FC_FILE,
+    subjects=settings.FC_SUBJECTS,
+    default_subject=settings.FC_DEFAULT_SUBJECT,
+    legacy_filename=settings.FC_LEGACY_FILE,
 )
 
 
@@ -183,7 +185,7 @@ def repair_stored_text():
     from pdf2md.mathglyph import repair_markdown
     changed, scanned = [], 0
     with lock:
-        for kind, names in (("q", questions.list_names()), ("f", [settings.FC_FILE])):
+        for kind, names in (("q", questions.list_names()), ("f", cards.filenames())):
             for name in names:
                 scanned += 1
                 try:

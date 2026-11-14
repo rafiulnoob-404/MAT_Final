@@ -121,7 +121,15 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border:0;border-radiu
 @media(prefers-reduced-motion:reduce){.cursor{animation:none}}
 .tw-h{display:none!important}
 .note.lg.typing{cursor:pointer}
-.na{display:flex;gap:10px}.na button{border:0;background:rgba(0,0,0,.08);border-radius:999px;font:inherit;font-size:.78rem;font-weight:700;padding:3px 12px;cursor:pointer;color:#1b2440}
+.na{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.na button{border:0;background:rgba(0,0,0,.08);border-radius:999px;font:inherit;font-size:.78rem;font-weight:700;padding:3px 12px;cursor:pointer;color:#1b2440}
+.nh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.nsb-wrap{position:relative;display:inline-flex;align-items:center}
+.nsb{appearance:none;-webkit-appearance:none;border:0;background:rgba(255,255,255,.68);color:#1b2440;border-radius:999px;font:inherit;font-size:.74rem;font-weight:800;letter-spacing:.02em;padding:4px 24px 4px 11px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.08);width:auto}
+.nsb:focus{outline:2px solid rgba(27,36,64,.45)}
+.nsb-wrap::after{content:"▾";position:absolute;right:9px;font-size:.7rem;color:#1b2440;pointer-events:none;font-weight:800}
+.nsb-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.68);color:#1b2440;border-radius:999px;font-size:.75rem;font-weight:800;padding:3px 11px;box-shadow:0 2px 6px rgba(0,0,0,.08);align-self:flex-start}
+.nid{font-size:.73rem;font-weight:700;color:rgba(27,36,64,.55)}
+.chip .cnt-b{display:inline-block;margin-left:5px;padding:1px 7px;border-radius:999px;font-size:.72rem;background:rgba(128,136,170,.18);font-variant-numeric:tabular-nums}
 .modal{position:fixed;inset:0;background:rgba(10,12,25,.55);z-index:40;display:grid;place-items:center;padding:14px}
 .mbox{width:100%;max-width:640px;max-height:92vh;overflow:auto}
 .tbar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
@@ -193,6 +201,7 @@ body.has-sync .shell{padding-top:64px}
 </section>
 
 <section id="t-cards" hidden>
+ <div class="frow" style="margin-bottom:6px"><span class="mut">Subject</span><div class="chips" id="c-sb"></div></div>
  <div class="tools"><button class="btn p" id="addc">+ Add card</button><button class="btn" id="studyb">Study</button><span class="mut" id="ccnt"></span></div>
  <div class="notes" id="cg"></div>
  <div id="sv" hidden></div>
@@ -247,6 +256,8 @@ body.has-sync .shell{padding-top:64px}
 
 <div class="modal" id="ed" hidden><div class="card mbox">
  <h3 id="edt">New card</h3>
+ <label style="margin-top:8px">Subject</label>
+ <div class="chips" id="ed-sb" style="margin-bottom:8px;gap:8px"></div>
  <div class="tbar" id="tbar">
   <button data-c="bold"><b>B</b></button><button data-c="italic"><i>I</i></button><button data-c="underline"><u>U</u></button><button data-c="strikeThrough"><s>S</s></button>
   <button data-c="h">Heading</button><button data-c="quote">❝ Quote</button><button data-c="insertUnorderedList">• List</button><button data-c="insertOrderedList">1. List</button>
@@ -274,6 +285,7 @@ body.has-sync .shell{padding-top:64px}
 <script>
 const $=s=>document.querySelector(s);
 const SUBJ={B:'Biology',C:'Chemistry',P:'Physics',GK:'GK',E:'English'};
+const CSUBJ={B:'Biology',C:'Chemistry',P:'Physics',GK:'GK',E:'English',general:'General'};
 const SL={...SUBJ,MT:'Model Test'};
 const CO={U:'UNMESH',R:'RETINA'};
 const P=Object.assign({theme:'light',accent:'#16315f',font:'Nunito',size:16},JSON.parse(localStorage.ui||'{}'));
@@ -523,6 +535,11 @@ async function keep(ch){
 $('#k1').onclick=()=>keep('keep1');$('#k2').onclick=()=>keep('keep2');$('#kb').onclick=()=>keep('both');
 
 /* add question -> flashcard */
+function qSubj(q){
+ const sb=q&&(q.sb||(q.r&&q.r.sb));
+ if(sb&&CSUBJ[sb])return sb;
+ const m=(q&&q.file||'').match(/^(?:U|R)_(?:ON|OFF)_(?:P|S)_(B|C|P|GK|E)_\d+\.md$/i);
+ return m?m[1].toUpperCase():'general'}
 function cardMd(q,m){
  const line=q.ans>=0&&q.opts[q.ans]?one(q.stem)+' — '+one(q.opts[q.ans]):'';   // exactly 1 line: question + answer
  if(m==='mcq')return line;
@@ -531,11 +548,12 @@ function cardMd(q,m){
 async function addCard(q,m){
  const body=cardMd(q,m);
  if(!body){toast(m==='mcq'?'No answer to add':m==='exp'?'No explanation to add':'Nothing to add');return}
- try{await post('/api/cards',{body,color:CC[C.length%CC.length]});toast('Added to cards',1);markDirty()}
+ const subject=qSubj(q);
+ try{const added=await post('/api/cards',{body,color:CC[C.length%CC.length],subject});C.push(added);toast(`Added to ${CSUBJ[subject]||'General'} cards`,1);markDirty()}
  catch(e){toast('Card save failed: '+e)}}
 
 /* flashcards (never shuffled) */
-let C=[],deck=[],di=0,edId=null,edColor='#fff3a3',twTimer=null,twStop=null;
+let C=[],csb='all',deck=[],di=0,edId=null,edColor='#fff3a3',edSubj='general',edOrigSubj=null,twTimer=null,twStop=null;
 const CC=['#fff3a3','#ffd6e0','#d4f5dd','#d6e8ff','#ead9ff'];
 const BN_SEG=typeof Intl!=='undefined'&&Intl.Segmenter?new Intl.Segmenter('bn',{granularity:'grapheme'}):null;
 const graphemes=s=>BN_SEG?[...BN_SEG.segment(s)].map(x=>x.segment):[...s];
@@ -617,43 +635,77 @@ async function loadCards(){
 function big(b){
  const t=(b||'').replace(/<[^>]+>|[*_#>`|-]/g,'').trim(),lines=(b||'').split('\n').filter(x=>x.trim()).length;
  return t.length>260||lines>8||/^\|.+\|\s*$/m.test(b||'')&&lines>6}
+function cList(){return csb==='all'?C:C.filter(c=>(c.subject||'general')===csb)}
+function csbUI(){
+ const counts={all:C.length};
+ Object.keys(CSUBJ).forEach(k=>counts[k]=0);
+ C.forEach(c=>{const s=c.subject||'general';counts[s]=(counts[s]||0)+1});
+ const opts=[['all','All'],...Object.entries(CSUBJ)];
+ $('#c-sb').innerHTML=opts.map(([k,v])=>`<button class="chip${csb===k?' on':''}" data-k="${k}">${v}<span class="cnt-b">${counts[k]||0}</span></button>`).join('');
+ $('#c-sb').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{csb=b.dataset.k;stopType();$('#sv').hidden=true;$('#cg').hidden=false;cardsUI()})}
 function cardsUI(){
- $('#ccnt').textContent=C.length+' cards';
- const newest=[...C].sort((a,b)=>b.id-a.id);
- $('#cg').innerHTML=newest.length?newest.map(c=>`<div class="note${big(c.body)?' wide':''}" data-id="${c.id}" style="background:${c.color}"><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="f">AI format</button><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`).join(''):'<div class="mut">No cards yet. Tap "Add card".</div>';
+ csbUI();
+ const list=cList();
+ $('#ccnt').textContent=csb==='all'?`${C.length} cards`:`${list.length} / ${C.length} cards · ${CSUBJ[csb]||csb}`;
+ const newest=[...list].sort((a,b)=>b.id-a.id);
+ $('#cg').innerHTML=newest.length?newest.map(c=>{
+  const sb=c.subject||'general';
+  const opts=Object.entries(CSUBJ).map(([k,v])=>`<option value="${k}"${k===sb?' selected':''}>${v}</option>`).join('');
+  return `<div class="note${big(c.body)?' wide':''}" data-id="${c.id}" data-sb="${sb}" style="background:${c.color}"><div class="nh"><span class="nsb-wrap" title="Change subject"><select class="nsb" aria-label="Card subject">${opts}</select></span><span class="nid">#${c.id}</span></div><div class="nb md">${md(c.body,0,1)}</div><div class="na"><button data-a="f">AI format</button><button data-a="e">Edit</button><button data-a="d">Delete</button></div></div>`
+ }).join(''):`<div class="mut">${C.length?'No cards in '+(CSUBJ[csb]||csb)+'.':'No cards yet. Tap "Add card".'}</div>`;
  math($('#cg'));
- $('#cg').querySelectorAll('.note button').forEach(b=>b.onclick=async()=>{
-  const id=+b.closest('.note').dataset.id,c=C.find(x=>x.id===id),a=b.dataset.a;
+ $('#cg').querySelectorAll('.nsb').forEach(sel=>sel.onchange=async()=>{
+  const noteEl=sel.closest('.note'),id=+noteEl.dataset.id,oldSb=noteEl.dataset.sb||'general',newSb=sel.value;
+  if(newSb===oldSb)return;
+  sel.disabled=true;
+  try{
+   const updated=await post('/api/cards/'+id,{subject:newSb,source_subject:oldSb},'PUT');
+   const idx=C.findIndex(x=>x.id===id&&(x.subject||'general')===oldSb);
+   if(idx>=0)C[idx]=updated;else await loadCards();
+   toast(`Moved to ${CSUBJ[newSb]||newSb}`,1);cardsUI();markDirty()
+  }catch(e){sel.value=oldSb;sel.disabled=false;toast('Move failed: '+e)}});
+ $('#cg').querySelectorAll('.note .na button').forEach(b=>b.onclick=async()=>{
+  const noteEl=b.closest('.note'),id=+noteEl.dataset.id,sb=noteEl.dataset.sb||'general',c=C.find(x=>x.id===id&&(x.subject||'general')===sb)||C.find(x=>x.id===id),a=b.dataset.a;
+  if(!c)return;
   if(a==='e')openEd(c);
   else if(a==='f'){
    b.disabled=true;b.textContent='…';
    try{const r=await post('/api/ai/format-card',{body:c.body,instructions:$('#ai-instr').value.trim()});
-    await post('/api/cards/'+id,{body:r.body,color:c.color},'PUT');toast('Formatted',1);loadCards();markDirty()}
+    await post('/api/cards/'+id,{body:r.body,color:c.color,subject:sb,source_subject:sb},'PUT');toast('Formatted',1);loadCards();markDirty()}
    catch(e){toast('AI failed: '+e);b.disabled=false;b.textContent='AI format'}}
-  else if(await dlg({title:'Delete card?',msg:'This cannot be undone.',danger:1,ok:'Delete'})){try{await post('/api/cards/'+id,{},'DELETE');loadCards();markDirty()}catch(e){toast('Delete failed: '+e)}}})}
+  else if(await dlg({title:'Delete card?',msg:'This cannot be undone.',danger:1,ok:'Delete'})){try{await post('/api/cards/'+id+'?subject='+encodeURIComponent(sb),{},'DELETE');loadCards();markDirty()}catch(e){toast('Delete failed: '+e)}}})}
 function study(){
- if(!C.length)return toast('No cards yet');
- deck=[...C];di=0;$('#cg').hidden=true;$('#sv').hidden=false;deckUI()}
+ const list=cList();
+ if(!list.length)return toast(C.length?'No cards in this subject':'No cards yet');
+ deck=[...list];di=0;$('#cg').hidden=true;$('#sv').hidden=false;deckUI()}
 function deckUI(){
  stopType();
  const sv=$('#sv');
  if(di>=deck.length){sv.innerHTML=`<div class="card q">Round complete.<div class="acts"><button class="btn p" id="rs">Start again</button><button class="btn" id="cl">Close</button></div></div>`;$('#rs').onclick=study;$('#cl').onclick=loadCards;return}
- const c=deck[di];
- sv.innerHTML=`<div class="qh" style="margin-top:16px"><span>${di+1} / ${deck.length}</span><span class="mut" id="twhint">Tap card to show all</span></div><div class="note lg md" style="background:${c.color}">${md(c.body,0,1)}</div><div class="acts" style="justify-content:center"><button class="btn p" id="dn">Next</button><button class="btn" id="cl">Close</button></div>`;
+ const c=deck[di],sb=c.subject||'general';
+ sv.innerHTML=`<div class="qh" style="margin-top:16px"><span>${di+1} / ${deck.length} · ${CSUBJ[sb]||sb}</span><span class="mut" id="twhint">Tap card to show all</span></div><div class="note lg" style="background:${c.color}"><span class="nsb-tag">${CSUBJ[sb]||sb}</span><div class="nb md">${md(c.body,0,1)}</div></div><div class="acts" style="justify-content:center"><button class="btn p" id="dn">Next</button><button class="btn" id="cl">Close</button></div>`;
+ const bodyEl=sv.querySelector('.note .nb');
+ math(bodyEl);
  const note=sv.querySelector('.note');
- math(note);
- typeCard(note,()=>{const h=$('#twhint');if(h)h.textContent=''});
+ typeCard(bodyEl,()=>{const h=$('#twhint');if(h)h.textContent='';note.classList.remove('typing');note.onclick=null});
+ note.classList.add('typing');
+ note.onclick=()=>{if(bodyEl.onclick)bodyEl.onclick()};
  $('#dn').onclick=()=>{stopType();di++;deckUI()};$('#cl').onclick=()=>{stopType();loadCards()}}
 $('#studyb').onclick=study;$('#addc').onclick=()=>openEd(null);
 
 /* editor */
+function edSbUI(){
+ $('#ed-sb').innerHTML=Object.entries(CSUBJ).map(([k,v])=>`<button type="button" class="chip${edSubj===k?' on':''}" data-k="${k}">${v}</button>`).join('');
+ $('#ed-sb').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{edSubj=b.dataset.k;edSbUI()})}
 function swUI(){$('#csw').innerHTML=CC.map(c=>`<button data-c="${c}" style="background:${c}" class="${c===edColor?'on':''}"></button>`).join('');
  $('#csw').querySelectorAll('button').forEach(b=>b.onclick=()=>{edColor=b.dataset.c;swUI()})}
 function openEd(c){
  edId=c?c.id:null;edColor=c?c.color:CC[C.length%CC.length];
+ edOrigSubj=c?(c.subject||'general'):null;
+ edSubj=c?(c.subject||'general'):(csb!=='all'&&CSUBJ[csb]?csb:'general');
  $('#edt').textContent=c?'Edit card':'New card';
  $('#edit').innerHTML=c?md(c.body,0,1):'';
- swUI();$('#ed').hidden=false;$('#edit').focus();document.execCommand('styleWithCSS',false,false)}
+ edSbUI();swUI();$('#ed').hidden=false;$('#edit').focus();document.execCommand('styleWithCSS',false,false)}
 $('#ecancel').onclick=()=>$('#ed').hidden=true;
 $('#tbar').onmousedown=e=>e.preventDefault();
 $('#tbar').onclick=async e=>{
@@ -691,7 +743,7 @@ $('#edit').onpaste=e=>{e.preventDefault();document.execCommand('insertText',fals
 $('#esave').onclick=async()=>{
  const body=h2m($('#edit'));
  if(!body)return toast('Card is empty');
- try{edId?await post('/api/cards/'+edId,{body,color:edColor},'PUT'):await post('/api/cards',{body,color:edColor});
+ try{edId?await post('/api/cards/'+edId,{body,color:edColor,subject:edSubj,source_subject:edOrigSubj},'PUT'):await post('/api/cards',{body,color:edColor,subject:edSubj});
   $('#ed').hidden=true;if(!$('#t-cards').hidden)loadCards();else toast('Card saved',1);markDirty()}
  catch(e){toast('Save failed: '+e)}};
 

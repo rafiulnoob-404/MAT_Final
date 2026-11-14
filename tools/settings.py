@@ -5,7 +5,17 @@ import os
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QDIR = os.environ.get("QUESTIONS_DIR", os.path.join(BASE, "questions"))
 FDIR = os.environ.get("FLASHCARD_DIR", os.path.join(BASE, "flashcard"))
-FC_FILE = "card.md"
+FC_SUBJECTS = {
+    "B": "B.md",
+    "C": "C.md",
+    "P": "P.md",
+    "GK": "GK.md",
+    "E": "E.md",
+    "general": "general.md",
+}
+FC_DEFAULT_SUBJECT = "general"
+FC_FILE = FC_SUBJECTS[FC_DEFAULT_SUBJECT]
+FC_LEGACY_FILE = "card.md"
 
 # GitHub-backed storage (enabled only when both token and repository are set).
 GH_TOKEN = os.environ.get("GITHUB_TOKEN", "")

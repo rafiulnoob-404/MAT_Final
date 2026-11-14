@@ -40,8 +40,13 @@ gunicorn app:app
 By default, data is stored locally:
 
 ```text
-questions/       Question Markdown files
-flashcard/card.md
+questions/          Question Markdown files
+flashcard/B.md      Biology flashcards
+flashcard/C.md      Chemistry flashcards
+flashcard/P.md      Physics flashcards
+flashcard/GK.md     GK flashcards
+flashcard/E.md      English flashcards
+flashcard/general.md General / uncategorized flashcards
 ```
 
 Question filenames must follow one of these formats:

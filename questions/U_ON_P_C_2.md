@@ -997,7 +997,7 @@ A
 (পাঠ্য সমাধান দেওয়া নেই।)
 
 ## status
-
+incorrect
 
 ### Q 55
 
@@ -1249,7 +1249,7 @@ C
 $ppm(w/v) = \frac{\text{দ্রবের ভর (g)} \times 10^6}{\text{দ্রবণের আয়তন (mL)}}$; $\therefore NaOH$ এর ppm ঘনমাত্রা $= \frac{2.5g \times 10^6}{100\ mL} = 25{,}000\ ppm$।
 
 ## status
-
+correct
 
 ### Q 69
 
@@ -1321,7 +1321,7 @@ B
 $E_k = \frac{3}{2}RT = \frac{3}{2} \times 8.314 \times (273+17) = 3616.59\ J$
 
 ## status
-
+correct
 
 ### Q 73
 

@@ -83,7 +83,13 @@ correct
 B
 
 ## explanation
-Ha-198; (প্রধান প্রধান শৈবালের সংক্ষিপ্ত পরিচিতি); Ulothrix সবুজ কোবাল; Navicula গোল্ডেন ব্রাউন শৈবাল; Sargassum বাদামী শৈবাল;
+* <mark>Gymnodium</mark> এবং <mark>Gonyaulax</mark> জাতীয় শৈবালগুলোকে সাধারণত **অগ্নি শৈবাল** (Fire algae) বা <mark>Pyrrophyta</mark> বলা হয়। এরা সমুদ্রে <mark>Red Tide</mark> বা লাল জোয়ার সৃষ্টি করে
+* **A) Navicula:** এটি একটি <mark>ডায়াটম (Diatom)</mark> বা সোনালী শৈবাল, যা <mark>Chrysophyta</mark> বা <mark>Bacillariophyta</mark> এর অন্তর্ভুক্ত।
+* **C) Ulothrix:** এটি একটি সবুজ শৈবাল বা <mark>Chlorophyta</mark> গোত্রের filamentous শৈবাল।
+* **D) Sargassum:** এটি একটি বাদামী শৈবাল বা <mark>Phaeophyta</mark> গোত্রের অন্তর্গত।
+
+> 🧠 **মমোনিক/শর্টকাট:** 
+> অগ্নিতে শরীর পুড়ে ছাই হয়ে যায়, আর জিম (**Gymnodium**) করলে শরীর আগুন ঝরায়! তাই **Gymnodium** হলো **অগ্নি শৈবাল**।
 
 ## status
 incorrect
@@ -1508,7 +1514,7 @@ A
 Ha-252; (পুষ্পমঞ্জুরি); গর্ভপাদ− সরিষা, জবা, ধান। গর্ভকটি − শিম, গোলাপ। গর্ভশীর্ষ − কুমড়া, পেয়ারা। Correct answer: A
 
 ## status
-skipped
+incorrect
 
 ### Q 85
 
@@ -1778,7 +1784,7 @@ B
 Ha-345; (অবাত শ্বসন); উচ্চ শ্রেণির উদ্ভিদে অবাত শ্বসন ঘটে। এ প্রক্রিয়ায় গ্লুকোজ থেকে ল্যাকটিক এসিড/ইথানল উৎপন্ন হয়।
 
 ## status
-skipped
+correct
 
 ### Q 100
 

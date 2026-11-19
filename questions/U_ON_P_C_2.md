@@ -1141,7 +1141,7 @@ C
 $CH_3-CH_2-OH \xrightarrow{PCl_5} CH_3-CH_2-Cl \xrightarrow[dry\ ether]{Na} CH_3-CH_2-CH_2-CH_3$
 
 ## status
-
+incorrect
 
 ### Q 63
 

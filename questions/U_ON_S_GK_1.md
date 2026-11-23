@@ -860,7 +860,7 @@ A
 ২৫ ফেব্রুয়ারি- জাতীয় শহিদ সেনা দিবস।
 
 ## status
-skipped
+correct
 
 ### Q 49
 
@@ -1022,7 +1022,7 @@ C
 
 
 ## status
-skipped
+correct
 
 ### Q 58
 

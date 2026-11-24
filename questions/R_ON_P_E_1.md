@@ -338,7 +338,7 @@ D
 RD(II)-69; Informed of = জানানো।
 
 ## status
-skipped
+incorrect
 
 ### Q 20
 

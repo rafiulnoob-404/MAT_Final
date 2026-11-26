@@ -1058,7 +1058,7 @@ C
 RD; (I)-202; Quasi-Passive verb এর Passive করার সময় Subject এর স্থান পরিবর্তিত হয় না।
 
 ## status
-skipped
+incorrect
 
 ### Q 60
 

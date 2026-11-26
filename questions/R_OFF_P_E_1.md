@@ -1706,7 +1706,7 @@ D
 RD; (I)-121; As/Since/ Though/ Although/If ইত্যাদি Adverb দ্বারা যুক্ত কোনো Clause দেখলে বুঝতে হবে সেটি Adverbial clause.
 
 ## status
-skipped
+incorrect
 
 ### Q 96
 

@@ -1526,7 +1526,7 @@ B
 RD; (I)-133; পূর্বে ঘটেছে এমন কিছু অনুমান করার ক্ষেত্রে See, appear, happen, pretend, seem প্রভৃতি verb এর পরে Perfect infinitive অর্থাৎ to + have + V3 হয়।
 
 ## status
-skipped
+correct
 
 ### Q 86
 

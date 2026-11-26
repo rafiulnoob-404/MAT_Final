@@ -896,7 +896,7 @@ D
 RD(II)-03; cast off = ফেলে দেওয়া।
 
 ## status
-skipped
+correct
 
 ### Q 51
 
@@ -1202,7 +1202,7 @@ D
 RD(II)-06; Do away with = abolish, বন্ধ করা।
 
 ## status
-skipped
+incorrect
 
 ### Q 68
 
@@ -1418,7 +1418,7 @@ D
 RD(II)-181; (B) To blow hot and cold in the same breath; (C) A cat has nine lives; (D) Set a thief to catch a thief.
 
 ## status
-skipped
+incorrect
 
 ### Q 80
 
@@ -1688,7 +1688,7 @@ A
 RD(II)-68; Identical with = একই রকম।
 
 ## status
-skipped
+correct
 
 ### Q 95
 

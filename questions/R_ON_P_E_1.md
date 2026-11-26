@@ -1454,7 +1454,7 @@ B
 RD(I)-74; Noun অথবা pronoun এর objective form এর পূর্বে about থাকলে তা Preposition হিসেবে ব্যবহৃত হয়।
 
 ## status
-skipped
+correct
 
 ### Q 82
 

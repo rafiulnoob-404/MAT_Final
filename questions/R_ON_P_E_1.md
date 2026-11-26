@@ -572,7 +572,7 @@ C
 RD(II)-22; Efflorescence, Estuary, Embarrassment.
 
 ## status
-skipped
+correct
 
 ### Q 33
 
@@ -734,7 +734,7 @@ A
 RD(I)-115; Verb এর পর preposition যুক্ত হয়ে যদি verb এর অর্থ পরিবর্তন হয় তাকে verb + preposition = verb phrase বলে।
 
 ## status
-skipped
+incorrect
 
 ### Q 42
 

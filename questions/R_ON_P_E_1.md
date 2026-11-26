@@ -698,7 +698,7 @@ D
 RD(I)-150; নিত্য ঘটে কোনো ঘটনা নির্দেশ করতে present Indefinite tense ব্যবহৃত হয়।
 
 ## status
-skipped
+correct
 
 ### Q 40
 

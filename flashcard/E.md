@@ -6,3 +6,8 @@
 **অবহিত করা (Informed of)**
 
 - **অবহিত করা**: Informed of = <mark>জানানো</mark>
+
+### Card 80
+<!-- color: #ffd6e0 -->
+
+RD(I)-170; Slow and steady, Bread and butter, Rice and curry—এগুলোর পরে verb এর singular form বসে।

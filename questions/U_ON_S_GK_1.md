@@ -985,7 +985,7 @@ D
 এসডিজি (SDGs)-র মেয়াদকাল ২০১৬-২০৩০।
 
 ## status
-skipped
+incorrect
 
 ### Q 55
 
@@ -1381,7 +1381,7 @@ B
 
 
 ## status
-skipped
+incorrect
 
 ### Q 77
 
@@ -1741,7 +1741,7 @@ D
 স্বাধীন বাংলাদেশের প্রথম জনশুমারি (আদমশুমারি) অনুষ্ঠিত হয় ১৯৭৪ সালে।
 
 ## status
-skipped
+incorrect
 
 ### Q 97
 

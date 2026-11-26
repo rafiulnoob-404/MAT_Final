@@ -212,7 +212,7 @@ C
 RD(I)-231; • নিজে বসার ক্ষেত্রে Intransitive Verb sit বসে, Transitive Verb seat নয়। • ভাষা বা কোনো বিদ্যা শেখার ক্ষেত্রে learn বসে, know নয় (know মানে পূর্ব থেকেই জানা থাকা)। • কোনো কিছুর পরিবর্তে অন্য কিছু প্রতিস্থাপন করার Standard Structure হলো replace [A] with [B]। • বাংলায় "স্বপ্ন দেখা" বললেও ইংরেজিতে কখনো see a dream হয় না, have a dream বলতে হয়।
 
 ## status
-skipped
+correct
 
 ### Q 13
 

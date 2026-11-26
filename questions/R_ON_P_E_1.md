@@ -824,7 +824,7 @@ B
 RD(II)-05; Died from = আঘাতে মারা যাওয়া।
 
 ## status
-skipped
+correct
 
 ### Q 47
 

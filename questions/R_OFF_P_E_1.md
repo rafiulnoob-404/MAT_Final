@@ -1436,7 +1436,7 @@ A
 RD; (II)-18; Adolescence বয়ঃসন্ধি; Assassination গুপ্তহত্যা; Acquaintance পরিচিত; Accessible প্রবেশযোগ্য ।
 
 ## status
-skipped
+incorrect
 
 ### Q 81
 

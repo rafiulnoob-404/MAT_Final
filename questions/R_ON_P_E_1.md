@@ -1094,7 +1094,7 @@ D
 RD(I)-197; Sub + verb + obj → Object এর subject form + am/is/are + verb এর past participle + by + Subject এর objective form.
 
 ## status
-skipped
+correct
 
 ### Q 62
 
@@ -1616,7 +1616,7 @@ B
 RD(II)-181; A cat has nine lives (কৈ মাছের প্রাণ).
 
 ## status
-skipped
+incorrect
 
 ### Q 91
 

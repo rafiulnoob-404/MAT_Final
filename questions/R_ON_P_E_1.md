@@ -392,7 +392,7 @@ C
 RD(I)-170; Slow and steady, Bread and butter, Rice and curry—এগুলোর পরে verb এর singular form বসে।
 
 ## status
-skipped
+incorrect
 
 ### Q 23
 

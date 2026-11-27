@@ -341,7 +341,7 @@ D
 ইলেকট্রোফাইল → $H^+, H_3O^+, NO_2^+, SO_3, AlCl_3$।
 
 ## status
-
+incorrect
 
 ### Q 19
 
